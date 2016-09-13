@@ -6,19 +6,10 @@
 package com.adm.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -70,6 +61,12 @@ public class Artikel implements Serializable {
 	private Collection<Bestelartikel> bestelartikelCollection;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "artikelId")
 	private Collection<Prijsartikel> prijsartikelCollection;
+
+	@Transient
+	BigDecimal actuelePrijs;
+
+	@Transient
+	String artikelAfbeelding;
 
 	public Artikel() {
 	}
@@ -149,6 +146,22 @@ public class Artikel implements Serializable {
 
 	public void setPrijsartikelCollection(Collection<Prijsartikel> prijsartikelCollection) {
 		this.prijsartikelCollection = prijsartikelCollection;
+	}
+
+	public BigDecimal getActuelePrijs() {
+		return actuelePrijs;
+	}
+
+	public void setActuelePrijs(BigDecimal actuelePrijs) {
+		this.actuelePrijs = actuelePrijs;
+	}
+
+	public String getArtikelAfbeelding() {
+		return artikelAfbeelding;
+	}
+
+	public void setArtikelAfbeelding(String artikelAfbeelding) {
+		this.artikelAfbeelding = artikelAfbeelding;
 	}
 
 	@Override
