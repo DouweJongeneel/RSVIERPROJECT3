@@ -10,7 +10,9 @@ import java.io.IOException;
 /**
  * Created by douwejongeneel on 09/09/16.
  */
-@WebServlet(name = "servletController", loadOnStartup = 1, urlPatterns={"/", "/home"})
+
+@WebServlet(name = "servletController", loadOnStartup = 1, urlPatterns={"/", "/home",
+        "/artikel", "/artikel/", "/artikel/registreer", "/artikel/toon/{artikelId}", "/artikel/wijzig/{artikelId}", "/artikel/verwijder/{artikelId}"})
 public class ServletController extends HttpServlet {
 
     @Override
@@ -22,6 +24,28 @@ public class ServletController extends HttpServlet {
         if (userPath.equals("/home")) {
 
         }
+
+        // ARTIKEL METHODES
+        else if (userPath.equals("/artikel")) {
+            // TODO impl
+        }
+
+        else if (userPath.equals("/artikel/")) {
+            // TODO impl
+        }
+        else if (userPath.equals("/artikel/registreer")) {
+            // TODO impl
+        }
+        else if (userPath.equals("/artikel/toon/{artikelId}")) {
+            // TODO impl
+        }
+        else if (userPath.equals("/artikel/Wijzig/{artikelId}")) {
+            // TODO impl
+        }
+        else if (userPath.equals("/artikel/verwijder/{artikelId}")) {
+            // TODO impl
+        }
+
         // For all unhandled request redirect the user to the home page
         else {
             userPath = "/home";
