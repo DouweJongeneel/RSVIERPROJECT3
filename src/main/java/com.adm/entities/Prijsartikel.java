@@ -32,14 +32,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Prijsartikel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "prijsId")
 	private Long prijsId;
+	
 	@JoinColumn(name = "artikelId", referencedColumnName = "artikelId")
     @ManyToOne(optional = false)
 	private Artikel artikelId;
+	
 	@JoinColumn(name = "prijsId", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
 	private Prijs prijs;

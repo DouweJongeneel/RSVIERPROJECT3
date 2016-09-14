@@ -8,7 +8,6 @@ package com.adm.entities;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -27,9 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "klantadresadrestype")
 @XmlRootElement
 @NamedQueries({
-	@NamedQuery(name = "Klantadresadrestype.findAll", query = "SELECT k FROM Klantadresadrestype k"),
-	@NamedQuery(name = "Klantadresadrestype.findByKlantId", query = "SELECT k FROM Klantadresadrestype k WHERE k.klantadresadrestypePK.klantId = :klantId"),
-	@NamedQuery(name = "Klantadresadrestype.findByAdresId", query = "SELECT k FROM Klantadresadrestype k WHERE k.klantadresadrestypePK.adresId = :adresId")})
+	@NamedQuery(name = "Klantadresadrestype.findAll", query = "SELECT k FROM Klantadresadrestype k")})
 public class Klantadresadrestype implements Serializable {
 
 	private static final long serialVersionUID = 1L;

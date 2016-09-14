@@ -28,27 +28,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
 	@NamedQuery(name = "Bestelartikel.findAll", query = "SELECT b FROM Bestelartikel b"),
 	@NamedQuery(name = "Bestelartikel.findById", query = "SELECT b FROM Bestelartikel b WHERE b.id = :id"),
-	@NamedQuery(name = "Bestelartikel.findByAantal", query = "SELECT b FROM Bestelartikel b WHERE b.aantal = :aantal")})
+	@NamedQuery(name = "Bestelartikel.findByBestellingId", query = "SELECT b FROM Bestelartikel b WHERE b.bestellingId = :bestellingId")})
 public class Bestelartikel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
-	private Long id;
 	@Basic(optional = false)
-    @NotNull
-    @Column(name = "aantal")
+	@NotNull
+	@Column(name = "id")
+	private Long id;
+
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "aantal")
 	private int aantal;
+
 	@JoinColumn(name = "artikelId", referencedColumnName = "artikelId")
-    @ManyToOne(optional = false)
+	@ManyToOne(optional = false)
 	private Artikel artikelId;
+
 	@JoinColumn(name = "BestellingId", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+	@ManyToOne(optional = false)
 	private Bestelling bestellingId;
+
 	@JoinColumn(name = "prijsId", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+	@ManyToOne(optional = false)
 	private Prijs prijsId;
 
 	public Bestelartikel() {
@@ -60,6 +64,12 @@ public class Bestelartikel implements Serializable {
 
 	public Bestelartikel(Long id, int aantal) {
 		this.id = id;
+		this.aantal = aantal;
+	}
+
+	public Bestelartikel(Prijs prijs, Artikel artikel, int aantal) {
+		this.artikelId = artikel;
+		this.prijsId = prijs;
 		this.aantal = aantal;
 	}
 
@@ -127,5 +137,5 @@ public class Bestelartikel implements Serializable {
 	public String toString() {
 		return "com.mycompany.rsvierproject3.Bestelartikel[ id=" + id + " ]";
 	}
-	
+
 }
