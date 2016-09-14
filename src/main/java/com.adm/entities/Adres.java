@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package com.adm.entities;
-
+ 
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -44,52 +44,63 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Adres implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "id")
 	private Long id;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "adresActief")
 	private String adresActief;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "datumAanmaak")
 	private String datumAanmaak;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "datumGewijzigd")
 	private String datumGewijzigd;
+	
 	@Basic(optional = false)
     @NotNull
     @Column(name = "huisnummer")
 	private int huisnummer;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "postcode")
 	private String postcode;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "straatnaam")
 	private String straatnaam;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "toevoeging")
 	private String toevoeging;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "woonplaats")
 	private String woonplaats;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "adres")
 	private Collection<Klantadresadrestype> klantadresadrestypeCollection;
+	
 	@JoinColumn(name = "type_id", referencedColumnName = "id")
     @ManyToOne
 	private Adrestype typeId;

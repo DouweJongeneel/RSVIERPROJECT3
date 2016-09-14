@@ -43,20 +43,24 @@ public class Betaling implements Serializable {
     @NotNull
     @Column(name = "id")
 	private Long id;
+	
 	@Basic(optional = false)
     @NotNull
     @Column(name = "betaalDatum")
     @Temporal(TemporalType.DATE)
 	private Date betaalDatum;
+	
 	@Size(max = 255)
     @Column(name = "betalingsGegevens")
 	private String betalingsGegevens;
-	@JoinColumn(name = "factuur_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+	
+    @OneToOne(optional = false)
 	private Factuur factuurId;
+	
 	@JoinColumn(name = "klant_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
 	private Klant klantId;
+	
 	@JoinColumn(name = "betaalwijze_id", referencedColumnName = "id")
     @OneToOne(optional = false)
 	private Betaalwijze betaalwijzeId;

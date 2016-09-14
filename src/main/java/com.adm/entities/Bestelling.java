@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -44,27 +45,33 @@ public class Bestelling implements Serializable {
     @NotNull
     @Column(name = "id")
 	private Long id;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "bestelNummer")
 	private String bestelNummer;
+	
 	@Basic(optional = false)
     @NotNull
     @Column(name = "bestellingActief")
 	private boolean bestellingActief;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "datumAanmaak")
 	private String datumAanmaak;
+	
 	@JoinColumn(name = "klant_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
 	private Klant klantId;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bestellingId")
 	private Collection<Bestelartikel> bestelartikelCollection;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bestellingId")
-	private Collection<Factuur> factuurCollection;
+	
+	@OneToOne(optional = false)
+	private Factuur factuur;
 
 	public Bestelling() {
 	}
@@ -130,12 +137,12 @@ public class Bestelling implements Serializable {
 	}
 
 	@XmlTransient
-	public Collection<Factuur> getFactuurCollection() {
-		return factuurCollection;
+	public Factuur getFactuur() {
+		return factuur;
 	}
 
-	public void setFactuurCollection(Collection<Factuur> factuurCollection) {
-		this.factuurCollection = factuurCollection;
+	public void setFactuur(Factuur factuur) {
+		this.factuur = factuur;
 	}
 
 	@Override

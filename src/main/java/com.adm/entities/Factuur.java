@@ -6,7 +6,6 @@
 package com.adm.entities;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -18,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -46,20 +46,23 @@ public class Factuur implements Serializable {
     @NotNull
     @Column(name = "id")
 	private Long id;
+	
 	@Basic(optional = false)
     @NotNull
     @Column(name = "factureringsDatum")
     @Temporal(TemporalType.TIMESTAMP)
 	private Date factureringsDatum;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "factuurNummer")
 	private String factuurNummer;
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "factuurId")
-	private Collection<Betaling> betalingCollection;
-	@JoinColumn(name = "bestelling_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "factuurId")
+	private Betaling betaling;
+	
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "factuur")
 	private Bestelling bestellingId;
 
 	public Factuur() {
@@ -100,12 +103,12 @@ public class Factuur implements Serializable {
 	}
 
 	@XmlTransient
-	public Collection<Betaling> getBetalingCollection() {
-		return betalingCollection;
+	public Betaling getBetaling() {
+		return betaling;
 	}
 
-	public void setBetalingCollection(Collection<Betaling> betalingCollection) {
-		this.betalingCollection = betalingCollection;
+	public void setBetaling(Betaling betaling) {
+		this.betaling = betaling;
 	}
 
 	public Bestelling getBestellingId() {

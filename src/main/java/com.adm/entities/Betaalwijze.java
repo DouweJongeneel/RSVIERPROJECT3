@@ -15,6 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -33,14 +34,27 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Betaalwijze implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	@Transient
+	private final String[] type = {"harrie.betaling.creditcard",
+		"harrie.betaling.cash",
+		"harrie.betaling.ideal",
+		"harrie.betaling.paypal",
+		"harrie.betaling.inkind"};
+
+	@Transient
+	String value;
+
 	@Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "id")
 	private Long id;
+
 	@Size(max = 255)
-    @Column(name = "betaalWijze")
+	@Column(name = "betaalWijze")
 	private String betaalWijze;
+
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "betaalwijzeId")
 	private Betaling betaling;
 
@@ -75,6 +89,15 @@ public class Betaalwijze implements Serializable {
 		this.betaling = betaling;
 	}
 
+	public void setValue(String value) {
+		this.value = value;
+		setBetaalWijzeType();
+	}
+
+	public void setBetaalWijzeType() {
+		betaalWijze = type[Integer.parseInt(value)];
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -99,5 +122,5 @@ public class Betaalwijze implements Serializable {
 	public String toString() {
 		return "com.mycompany.rsvierproject3.Betaalwijze[ id=" + id + " ]";
 	}
-	
+
 }

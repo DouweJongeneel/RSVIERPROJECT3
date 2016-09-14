@@ -6,13 +6,16 @@
 package com.adm.entities;
 
 import java.io.Serializable;
-import javax.persistence.EmbeddedId;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -23,41 +26,28 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "klantadresadrestype")
 @XmlRootElement
 @NamedQueries({
-	@NamedQuery(name = "Klantadresadrestype.findAll", query = "SELECT k FROM Klantadresadrestype k"),
-	@NamedQuery(name = "Klantadresadrestype.findByKlantId", query = "SELECT k FROM Klantadresadrestype k WHERE k.klantadresadrestypePK.klantId = :klantId"),
-	@NamedQuery(name = "Klantadresadrestype.findByAdresId", query = "SELECT k FROM Klantadresadrestype k WHERE k.klantadresadrestypePK.adresId = :adresId")})
+	@NamedQuery(name = "Klantadresadrestype.findAll", query = "SELECT k FROM Klantadresadrestype k")})
 public class Klantadresadrestype implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	@EmbeddedId
-	protected KlantadresadrestypePK klantadresadrestypePK;
+
+	@Id
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "id")
+	private Long id;
+
 	@JoinColumn(name = "adresId", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+	@ManyToOne(optional = false)
 	private Adres adres;
 	@JoinColumn(name = "klantId", referencedColumnName = "id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
+	@ManyToOne(optional = false)
 	private Klant klant;
 	@JoinColumn(name = "adresTypeId", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+	@ManyToOne(optional = false)
 	private Adrestype adresTypeId;
 
 	public Klantadresadrestype() {
-	}
-
-	public Klantadresadrestype(KlantadresadrestypePK klantadresadrestypePK) {
-		this.klantadresadrestypePK = klantadresadrestypePK;
-	}
-
-	public Klantadresadrestype(long klantId, long adresId) {
-		this.klantadresadrestypePK = new KlantadresadrestypePK(klantId, adresId);
-	}
-
-	public KlantadresadrestypePK getKlantadresadrestypePK() {
-		return klantadresadrestypePK;
-	}
-
-	public void setKlantadresadrestypePK(KlantadresadrestypePK klantadresadrestypePK) {
-		this.klantadresadrestypePK = klantadresadrestypePK;
 	}
 
 	public Adres getAdres() {
@@ -84,21 +74,29 @@ public class Klantadresadrestype implements Serializable {
 		this.adresTypeId = adresTypeId;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (klantadresadrestypePK != null ? klantadresadrestypePK.hashCode() : 0);
+		hash += (klant != null && adres != null ? klant.hashCode() + adres.hashCode() : 0);
 		return hash;
 	}
 
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
+		Klantadresadrestype other = (Klantadresadrestype) object;
 		if (!(object instanceof Klantadresadrestype)) {
 			return false;
 		}
-		Klantadresadrestype other = (Klantadresadrestype) object;
-		if ((this.klantadresadrestypePK == null && other.klantadresadrestypePK != null) || (this.klantadresadrestypePK != null && !this.klantadresadrestypePK.equals(other.klantadresadrestypePK))) {
+		
+		if ((id == null && other.getId() != null) || (this.id != null && !this.id.equals(other))) {
 			return false;
 		}
 		return true;
@@ -106,7 +104,7 @@ public class Klantadresadrestype implements Serializable {
 
 	@Override
 	public String toString() {
-		return "com.mycompany.rsvierproject3.Klantadresadrestype[ klantadresadrestypePK=" + klantadresadrestypePK + " ]";
+		return "com.mycompany.rsvierproject3.Klantadresadrestype[ klantadresadrestypePK=" + klant + " " + adres + " ]";
 	}
-	
+
 }

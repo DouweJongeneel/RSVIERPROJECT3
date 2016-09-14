@@ -43,61 +43,74 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Klant implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "id")
 	private Long id;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "achternaam")
 	private String achternaam;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "datumAanmaak")
 	private String datumAanmaak;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "datumGewijzigd")
 	private String datumGewijzigd;
+	
 	// @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "email")
 	private String email;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "klantActief")
 	private String klantActief;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "klantRol")
 	private String klantRol;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "password")
 	private String password;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "tussenvoegsel")
 	private String tussenvoegsel;
+	
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "voornaam")
 	private String voornaam;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klantId")
 	private Collection<Betaling> betalingCollection;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klant")
 	private Collection<Klantadresadrestype> klantadresadrestypeCollection;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klantId")
 	private Collection<Bestelling> bestellingCollection;
 

@@ -42,23 +42,28 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Prijs implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "id")
 	private Long id;
+	
 	@Basic(optional = false)
     @NotNull
     @Column(name = "datumAanmaak")
     @Temporal(TemporalType.DATE)
 	private Date datumAanmaak;
+	
 	// @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
 	@Basic(optional = false)
     @NotNull
     @Column(name = "prijs")
 	private BigDecimal prijs;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "prijsId")
 	private Collection<Bestelartikel> bestelartikelCollection;
+	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "prijs")
 	private Prijsartikel prijsartikel;
 
