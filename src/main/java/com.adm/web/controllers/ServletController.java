@@ -1,5 +1,8 @@
 package com.adm.web.controllers;
 
+import com.adm.entities.Artikel;
+import com.adm.web.helpers.ArtikelBewerkingen;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +18,14 @@ import java.io.IOException;
         "/artikel", "/artikel/", "/artikel/registreer", "/artikel/toon/{artikelId}", "/artikel/wijzig/{artikelId}", "/artikel/verwijder/{artikelId}"})
 public class ServletController extends HttpServlet {
 
+    ArtikelBewerkingen artikelBewerkingen;
+
+    public ServletController() {
+        if (artikelBewerkingen == null) {
+            artikelBewerkingen = new ArtikelBewerkingen();
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -25,16 +36,24 @@ public class ServletController extends HttpServlet {
 
         }
 
-        // ARTIKEL METHODES
-        else if (userPath.equals("/artikel")) {
-            // TODO impl
+        /**
+         *  ARTIKEL METHODES
+         */
+        else if (userPath.equals("/artikel") || userPath.equals("/artikel/")) {
+
+            artikelBewerkingen.maakArtikelOverzicht(request);
+
+            // stuur de client naar het artikel overzicht
+            userPath = "/artikel/artikelOverzicht";
+
         }
 
-        else if (userPath.equals("/artikel/")) {
-            // TODO impl
-        }
         else if (userPath.equals("/artikel/registreer")) {
-            // TODO impl
+
+            artikelBewerkingen.maakArtikelRegistratieFormulier(request);
+
+            // Stuur de client door naar de artikelRegistratie view
+            userPath = "/artikel/artikelRegistratie";
         }
         else if (userPath.equals("/artikel/toon/{artikelId}")) {
             // TODO impl
@@ -61,7 +80,12 @@ public class ServletController extends HttpServlet {
 
         String userPath = request.getServletPath();
 
-        if (userPath.equals("TODO")){
+        if (userPath.equals("/artikel/registreer")){
+
+            artikelBewerkingen.verwerkArtikelRegistratie(request);
+
+            // Toon de client het gecreeerde artikel
+            userPath = "redirect:/artikel/toon/{artikelId}";
 
         }
 

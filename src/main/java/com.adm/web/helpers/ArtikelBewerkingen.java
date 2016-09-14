@@ -11,6 +11,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * Created by douwejongeneel on 13/09/16.
  */
-public class ArtikelHelper {
+public class ArtikelBewerkingen {
 
     @Inject
     private ArtikelFacade artikelFacade;
@@ -29,10 +30,10 @@ public class ArtikelHelper {
     @Inject
     private PrijsFacade prijsFacade;
 
-    public ArtikelHelper() {
+    public ArtikelBewerkingen() {
     }
 
-    public ArtikelHelper(ArtikelFacade artikelFacade, PrijsFacade prijsFacade) {
+    public ArtikelBewerkingen(ArtikelFacade artikelFacade, PrijsFacade prijsFacade) {
         this.artikelFacade = artikelFacade;
         this.prijsFacade = prijsFacade;
     }
@@ -42,26 +43,34 @@ public class ArtikelHelper {
      */
 
     // Methode voor servletController --> /artikel en /artikel/
-    public String toonArtikelOverzichtView(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void maakArtikelOverzicht(HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
+
         // verkrijg een lijst met alle artikelen
-        List<Artikel> artikelList = maakArtikelLijst();
+        List<Artikel> artikelLijst = maakArtikelLijst();
 
         // stop de lijst met alle artikelen in de request
-        request.setAttribute("artikelLijst", artikelList);
+        session.setAttribute("artikelLijst", artikelLijst);
 
-        // geef de naam van de bijbehorende view terug
-        return "artikel/artikelOverzicht";
     }
-    // Methode die ervoor zorgt dat de client naar het artikelRegistratieFormulier gestuurd wordt
-    public String toonRegistratieView(HttpServletRequest request, HttpServletResponse response) {
-        request.setAttribute("artikelRegistratieFormulier", new ArtikelRegistratieFormulier());
-        return "artikel/artikelRegistratie";
+
+    // Methode voor servletController --> /artikel/registreer
+    public void maakArtikelRegistratieFormulier(HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
+
+        session.setAttribute("artikelRegistratieFormulier", new ArtikelRegistratieFormulier());
+
     }
 
     // Methode die het artikelRegistratieFormulier verwerkt
-    public String verwerkArtikelRegistratie(HttpServletRequest request, HttpServletResponse response,
-            /*@Valid */ artikelRegistratieFormulier artikelRegistratieFormulier,
-            Errors errors, RedirectAttributes model) throws Exception {
+    public String verwerkArtikelRegistratie(HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
+
+        ArtikelRegistratieFormulier artikelRegistratieFormulier =
+                (ArtikelRegistratieFormulier) session.getAttribute("artikelRegistratieFormulier");
 
         // Toon fouten wanneer het artikelRegistratieFormulier verkeerd is ingevuld
         if (errors.hasErrors()) {
@@ -84,14 +93,12 @@ public class ArtikelHelper {
         artikel.setArtikelAfbeelding(verkrijgArtikelAfbeeldingString(artikel.getArtikelId()));
 
         // Save flash attribute
-        request.setAttirbute("artikel", artikel);
-        request.setAttribute("id", artikel.getArtikelId());
+        session.setAttirbute("artikel", artikel);
+        session.setAttribute("id", artikel.getArtikelId());
 
-    // Redirect to created profile
-    return "redirect:/artikel/toon/{artikelId}";
     }
 
-    // Methode die de client een artikel laat zien
+    // Methode voor servletController --> /artikel/toon/{artikelId}
     public String toonArtikel(HttpServletRequest request, HttpServletResponse response
             /*@PathVariable Long id, Model model*/) throws Exception {
         // Verkrijg artikelgegevens en prijs
@@ -105,7 +112,7 @@ public class ArtikelHelper {
         return "artikel/toonArtikel";
     }
 
-    // Methode die de client een artikel laat aanpassen
+    // Methode voor servletController --> /artikel/wijzig/{artikelId}
     public String wijzigArtikel(HttpServletRequest request, HttpServletResponse response
             /*@PathVariable Long id, Model model */) {
 
@@ -163,6 +170,7 @@ public class ArtikelHelper {
         return "redirect:/artikel/toon/{artikelId}"; // TODO - ?
     }
 
+    // Methode voor servletController --> /artikel/verwijder/{artikelId}
     public String verwerkArtikelIsUitVoorraad(HttpServletRequest request, HttpServletResponse response
             /*@PathVariable Long id, RedirectAttributes model,
                                            @RequestParam(value="fromProfile", defaultValue="0") int fromProfilePage*/){

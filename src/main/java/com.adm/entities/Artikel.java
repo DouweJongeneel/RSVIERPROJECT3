@@ -75,10 +75,10 @@ public class Artikel implements Serializable {
 		this.artikelId = artikelId;
 	}
 
-	public Artikel(Long artikelId, String artikelNaam, Date datumAanmaak, boolean inAssortiment) {
-		this.artikelId = artikelId;
+	public Artikel(String artikelNaam, BigDecimal prijs, Integer VerwachteLevertijd, boolean inAssortiment) {
 		this.artikelNaam = artikelNaam;
-		this.datumAanmaak = datumAanmaak;
+		this.actuelePrijs = prijs;
+		this.verwachteLevertijd = verwachteLevertijd;
 		this.inAssortiment = inAssortiment;
 	}
 
