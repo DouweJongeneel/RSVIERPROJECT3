@@ -37,6 +37,10 @@ public class ArtikelHelper {
         this.prijsFacade = prijsFacade;
     }
 
+    /**
+     *  Onderstaande methodes helpen de servletController bij het verwerken van de artikelGegevens
+     */
+
     // Methode voor servletController --> /artikel en /artikel/
     public String toonArtikelOverzichtView(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // verkrijg een lijst met alle artikelen
@@ -46,12 +50,12 @@ public class ArtikelHelper {
         request.setAttribute("artikelLijst", artikelList);
 
         // geef de naam van de bijbehorende view terug
-        return "artikel/artikelLijst";
+        return "artikel/artikelOverzicht";
     }
     // Methode die ervoor zorgt dat de client naar het artikelRegistratieFormulier gestuurd wordt
     public String toonRegistratieView(HttpServletRequest request, HttpServletResponse response) {
         request.setAttribute("artikelRegistratieFormulier", new ArtikelRegistratieFormulier());
-        return "artikel/artikelRegistratieFormulier";
+        return "artikel/artikelRegistratie";
     }
 
     // Methode die het artikelRegistratieFormulier verwerkt
@@ -61,7 +65,7 @@ public class ArtikelHelper {
 
         // Toon fouten wanneer het artikelRegistratieFormulier verkeerd is ingevuld
         if (errors.hasErrors()) {
-            return "/artikel/artikelRegistratieFormulier";
+            return "/artikel/artikelRegistratie";
         }
 
 
@@ -87,7 +91,7 @@ public class ArtikelHelper {
     return "redirect:/artikel/toon/{artikelId}";
     }
 
-    // Methode die de client een artikelProfiel laat zien
+    // Methode die de client een artikel laat zien
     public String toonArtikel(HttpServletRequest request, HttpServletResponse response
             /*@PathVariable Long id, Model model*/) throws Exception {
         // Verkrijg artikelgegevens en prijs
@@ -98,7 +102,7 @@ public class ArtikelHelper {
         request.setAttribute("afbeelding", verkrijgArtikelAfbeeldingString(artikelId));
         request.setAttribute("artikel", artikel);
 
-        return "artikel/toonArtikelProfiel";
+        return "artikel/toonArtikel";
     }
 
     // Methode die de client een artikel laat aanpassen
@@ -119,7 +123,7 @@ public class ArtikelHelper {
         request.setAttribute("artikel", teWijzigenArtikel);
         request.setAttribute("plaatje", verkrijgArtikelAfbeeldingString(artikelId));
 
-        return "artikel/artikelWijzigingsFormulier";
+        return "artikel/artikelWijziging";
     }
 
     // Methode die de wijziging van het artikel verwerkt
@@ -129,7 +133,7 @@ public class ArtikelHelper {
                                             Errors errors, RedirectAttributes model */) throws Exception {
 
         if (errors.hasErrors()) {
-            return "/artikel/artikelWijzigingsFormulier";
+            return "/artikel/artikelWijziging";
         }
 
         // Vergelijk de prijs voor en na de wijziging en geef aan of de prijs gewijzigd is
