@@ -37,19 +37,25 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Adrestype implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "id")
 	private Long id;
+	
 	@Size(max = 255)
     @Column(name = "adres_type")
 	private String adresType;
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "adresTypeId")
 	private Collection<Klantadresadrestype> klantadresadrestypeCollection;
+	
 	@OneToMany(mappedBy = "typeId")
 	private Collection<Adres> adresCollection;
 
+	private static final String[] type = {"harrie.adres.homeAddress", "harrie.adres.workAddress", "harrie.adres.deliveryAddress"};
+	
 	public Adrestype() {
 	}
 

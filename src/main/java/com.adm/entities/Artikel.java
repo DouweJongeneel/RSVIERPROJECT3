@@ -9,7 +9,18 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -33,34 +44,45 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Artikel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
 	@Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "artikelId")
 	private Long artikelId;
+
 	@Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "artikelNaam")
 	private String artikelNaam;
+
 	@Size(max = 255)
     @Column(name = "artikelType")
 	private String artikelType;
+
 	@Basic(optional = false)
     @NotNull
     @Column(name = "datumAanmaak")
     @Temporal(TemporalType.TIMESTAMP)
 	private Date datumAanmaak;
+
 	@Basic(optional = false)
     @NotNull
     @Column(name = "inAssortiment")
 	private boolean inAssortiment;
+
 	@Column(name = "verwachteLevertijd")
 	private Integer verwachteLevertijd;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "artikelId")
 	private Collection<Bestelartikel> bestelartikelCollection;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "artikelId")
 	private Collection<Prijsartikel> prijsartikelCollection;
+
+	@Transient
+	private Prijs prijs;
 
 	@Transient
 	BigDecimal actuelePrijs;
@@ -80,6 +102,14 @@ public class Artikel implements Serializable {
 		this.actuelePrijs = prijs;
 		this.verwachteLevertijd = verwachteLevertijd;
 		this.inAssortiment = inAssortiment;
+	}
+
+	public Prijs getPrijs() {
+		return prijs;
+	}
+
+	public void setPrijs(Prijs prijs){
+		this.prijs = prijs;
 	}
 
 	public Long getArtikelId() {
