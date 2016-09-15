@@ -55,13 +55,27 @@ public class ServletController extends HttpServlet {
             userPath = "/artikel/artikelRegistratie";
         }
         else if (userPath.equals("/artikel/toon/{artikelId}")) {
-            // TODO impl
+
+            artikelBewerkingen.toonArtikel(request);
+
+            userPath = "artikel/toonArtikel";
         }
         else if (userPath.equals("/artikel/Wijzig/{artikelId}")) {
-            // TODO impl
+
+            artikelBewerkingen.wijzigArtikel(request);
+
+            userPath = "artikel/artikelWijziging";
         }
         else if (userPath.equals("/artikel/verwijder/{artikelId}")) {
-            // TODO impl
+            artikelBewerkingen.haalArtikelUitVoorraad(request);
+
+            // If the direct is from the product profile page, redirect to profilepage instead of product list.
+            if ((Integer)request.getAttribute("fromProfilePage") == 1) {
+                userPath = "redirect:/artikel/toon/{artikelId}";
+            }
+
+            // Return to the productlist page
+            userPath = "redirect:/artikel/";
         }
 
         // For all unhandled request redirect the user to the home page
@@ -84,6 +98,14 @@ public class ServletController extends HttpServlet {
             artikelBewerkingen.verwerkArtikelRegistratie(request);
 
             // Toon de client het gecreeerde artikel
+            userPath = "redirect:/artikel/toon/{artikelId}";
+
+        }
+        else if(userPath.equals("/artikel/artikelWijziging")) {
+
+            artikelBewerkingen.verwerkArtikelWijziging(request);
+
+            // Toon het resultaat van de wijziging
             userPath = "redirect:/artikel/toon/{artikelId}";
 
         }

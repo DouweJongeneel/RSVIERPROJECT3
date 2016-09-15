@@ -11,11 +11,7 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +65,7 @@ public class ArtikelBewerkingen {
     }
 
     // Methode die het artikelRegistratieFormulier verwerkt
-    public String verwerkArtikelRegistratie(HttpServletRequest request) {
+    public void verwerkArtikelRegistratie(HttpServletRequest request) {
 
         HttpSession session = request.getSession();
 
@@ -96,95 +92,100 @@ public class ArtikelBewerkingen {
         prijsFacade.create(artikelPrijs);
         prijsFacade.flush(); // flush DB voor id
         PrijsArtikel prijsArtikel = new PrijsArtikel(artikelPrijs.getId(), artikel, artikelPrijs);
-//        prijsArtikelFacade.flush();
+        prijsArtikelFacade.flush();
 
-        // Sla de afbeelding op
-        slaAfbeeldingOp(artikel.getArtikelId(), artikelRegistratieFormulier.getArtikelAfbeelding());
-        artikel.setArtikelAfbeelding(verkrijgArtikelAfbeeldingString(artikel.getArtikelId()));
+//        // Sla de afbeelding op
+//        slaAfbeeldingOp(artikel.getArtikelId(), artikelRegistratieFormulier.getArtikelAfbeelding());
+//        artikel.setArtikelAfbeelding(verkrijgArtikelAfbeeldingString(artikel.getArtikelId()));
 
-        // Save flash attribute
+        // Save session attribute
         session.setAttribute("artikel", artikel);
-        session.setAttribute("id", artikel.getArtikelId());
+        session.setAttribute("artikelId", artikel.getArtikelId());
 
     }
 
     // Methode voor servletController --> /artikel/toon/{artikelId}
-    public String toonArtikel(HttpServletRequest request, HttpServletResponse response
-            /*@PathVariable Long id, Model model*/) throws Exception {
+    public void toonArtikel(HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
+
         // Verkrijg artikelgegevens en prijs
-        Artikel artikel = artikelFacade.find((Long)artikelId);
+        Artikel artikel = artikelFacade.find(session.getAttribute("artikelId"));
         stopDeActuelePrijsInHetArtikel(artikel);
 
         // Stop artikel met prijs en plaatje in model
-        request.setAttribute("afbeelding", verkrijgArtikelAfbeeldingString(artikelId));
-        request.setAttribute("artikel", artikel);
+        //session.setAttribute("afbeelding", verkrijgArtikelAfbeeldingString(artikelId)); TODO --> afbeelding impl
+        session.setAttribute("artikel", artikel);
 
-        return "artikel/toonArtikel";
     }
 
     // Methode voor servletController --> /artikel/wijzig/{artikelId}
-    public String wijzigArtikel(HttpServletRequest request, HttpServletResponse response
-            /*@PathVariable Long id, Model model */) {
+    public void wijzigArtikel(HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
 
         // Verkrijg het artikel en de actuele prijs
-        Artikel teWijzigenArtikel = artikelFacade.find(artikelId);
+        Artikel teWijzigenArtikel = artikelFacade.find(session.getAttribute("artikelId"));
         stopDeActuelePrijsInHetArtikel(teWijzigenArtikel);
 
-        artikelRegistratieFormulier artikelWijzigingsFormulier = new artikelRegistratieFormulier(
+        ArtikelRegistratieFormulier artikelWijzigingsFormulier = new ArtikelRegistratieFormulier(
                 teWijzigenArtikel.getArtikelNaam(),
-                teWijzigenArtikel.getArtikelPrijs(),
+                teWijzigenArtikel.getActuelePrijs(),
                 teWijzigenArtikel.getVerwachteLevertijd(),
-                teWijzigenArtikel.isInAssortiment());
+                teWijzigenArtikel.getInAssortiment());
 
-        request.setAttribute("artikelRegistratieFormulier", artikelWijzigingsFormulier);
-        request.setAttribute("artikel", teWijzigenArtikel);
-        request.setAttribute("plaatje", verkrijgArtikelAfbeeldingString(artikelId));
+        session.setAttribute("artikelWijzigingsFormulier", artikelWijzigingsFormulier);
+        session.setAttribute("teWijzigenArtikel", teWijzigenArtikel);
+        // session.setAttribute("afbeelding", verkrijgArtikelAfbeeldingString(artikelId)); TODO --> afbeelding impl
 
-        return "artikel/artikelWijziging";
     }
 
     // Methode die de wijziging van het artikel verwerkt
-    public String verwerkArtikelWijziging( HttpServletRequest request, HttpServletResponse response
-            /* @PathVariable Long id, Artikel artikel,
-                                            @Valid ArtikelRegisterForm artikelForm,
-                                            Errors errors, RedirectAttributes model */) throws Exception {
+    public void verwerkArtikelWijziging( HttpServletRequest request) {
 
-        if (errors.hasErrors()) {
-            return "/artikel/artikelWijziging";
-        }
+//        if (errors.hasErrors()) {
+//            return "/artikel/artikelWijziging";
+//        }
+
+        HttpSession session = request.getSession();
+
+        ArtikelRegistratieFormulier artikelWijzigingsFormulier = (ArtikelRegistratieFormulier) session.getAttribute(
+                "artikelWijzigingsFormulier");
+        Artikel teWijzigenArtikel = (Artikel)session.getAttribute("teWijzigenArtikel");
 
         // Vergelijk de prijs voor en na de wijziging en geef aan of de prijs gewijzigd is
         // TODO - impl
 
         // Zet de gegevens uit het artikel formulier in het artikel
-        artikel.setArtikelNaam(artikelWijzigingsFormulier.getArtikelNaam());
-        artikel.setArtikelPrijs(artikelWijzigingsFormulier.getArtikelPrijs());
-        artikel.setVerwachteLevertijd(artikelWijzigingsFormulier.getArtikelLevertijd());
-        artikel.setInAssortiment(artikelWijzigingsFormulier.isArtikelOpVoorraad());
+        teWijzigenArtikel.setArtikelNaam(artikelWijzigingsFormulier.getArtikelNaam());
+        teWijzigenArtikel.setActuelePrijs(artikelWijzigingsFormulier.getArtikelPrijs());
+        teWijzigenArtikel.setVerwachteLevertijd(artikelWijzigingsFormulier.getArtikelLevertijd());
+        teWijzigenArtikel.setInAssortiment(artikelWijzigingsFormulier.isArtikelOpVoorraad());
 
         // Sla het artikel op in de database
-        artikel = artikelFacade.edit(artikel);
+        artikelFacade.edit(teWijzigenArtikel);
 
-        // Wanneer de prijs gewijzigd is wordt er een nieuwe prijs opgeslagen in de database
-        if (prijsIsGewijzigd) {
-            prijsFacade.create(new Prijs(artikelForm.getArtikelPrijs(), artikel));
-        }
+        // TODO --> is prijs gewijzigd? afbeelding?
+//        // Wanneer de prijs gewijzigd is wordt er een nieuwe prijs opgeslagen in de database
+//        if (prijsIsGewijzigd) {
+//            prijsFacade.create(new Prijs(artikelForm.getArtikelPrijs(), teWijzigenArtikel));
+//        }
+//
+//        // Sla de afbeelding op wanneer deze gewijzigd is
+//        if (!artikelForm.getArtikelAfbeelding().getOriginalFilename().isEmpty()) {
+//            slaAfbeeldingOp(teWijzigenArtikel.getArtikelId(), artikelWijzigingsFormulier.getArtikelAfbeelding());
+//        }
 
-        // Sla de afbeelding op wanneer deze gewijzigd is
-        if (!artikelForm.getArtikelAfbeelding().getOriginalFilename().isEmpty()) {
-            slaAfbeeldingOp(artikel.getArtikelId(), artikelWijzigingsFormulier.getArtikelAfbeelding());
-        }
+       session.setAttribute("teWijzigenArtikel", teWijzigenArtikel);
 
-       request.setAttribute("artikel", artikel);
-
-        return "redirect:/artikel/toon/{artikelId}"; // TODO - ?
     }
 
     // Methode voor servletController --> /artikel/verwijder/{artikelId}
-    public String verwerkArtikelIsUitVoorraad(HttpServletRequest request, HttpServletResponse response
-            /*@PathVariable Long id, RedirectAttributes model,
-                                           @RequestParam(value="fromProfile", defaultValue="0") int fromProfilePage*/){
-        Artikel artikel = artikelFacade.find(artikelId);
+    public void haalArtikelUitVoorraad(HttpServletRequest request){
+
+        HttpSession session = request.getSession();
+
+        Artikel artikel = artikelFacade.find(session.getAttribute("artikelId"));
 
         if (artikel.getInAssortiment()){
             artikel.setInAssortiment(false);
@@ -195,19 +196,9 @@ public class ArtikelBewerkingen {
 
         artikelFacade.edit(artikel);
 
-        request.setAttribute("artikel", artikel);
+        session.setAttribute("artikel", artikel);
 
-
-        // If the direct is from the product profile page, redirect to profilepage instead of product list.
-        if (fromProfilePage == 1) {
-            return "redirect:/artikel/toon/{artikelId}";
-        }
-
-        // Return to the productlist page
-        return "redirect:/artikel/";
     }
-
-
 
     /**
      * Ondersteunende methodes
@@ -220,37 +211,37 @@ public class ArtikelBewerkingen {
         for (int i = 0; i < artikelList.size(); i++) {
 
             Artikel tempArtikel = artikelList.get(i);
-            tempArtikel.setArtikelAfbeelding(verkrijgArtikelAfbeeldingString(tempArtikel.getArtikelId()));
+            //tempArtikel.setArtikelAfbeelding(verkrijgArtikelAfbeeldingString(tempArtikel.getArtikelId()));
             stopDeActuelePrijsInHetArtikel(tempArtikel);
 
         }
         return artikelList;
     }
-    // TODO - opslaan van artikel met facelets
-    public void slaAfbeeldingOp(Long id, File afbeelding) {
-        try {
-            afbeelding.transferTo(new File("/data/productPictures/" +
-                    id + ".jpg"));
-        }
-        catch (IOException ex) {
-            // TODO
-        }
-    }
+    // TODO - opslaan van afbeelding met facelets
+//    public void slaAfbeeldingOp(Long id, File afbeelding) {
+//        try {
+//            afbeelding.transferTo(new File("/data/productPictures/" +
+//                    id + ".jpg"));
+//        }
+//        catch (IOException ex) {
+//            // TODO
+//        }
+//    }
 
-    @SuppressWarnings("restriction")
-    public static String verkrijgArtikelAfbeeldingString(Long id) {
-        byte[] array = null;
-
-        try {
-            array = Files.readAllBytes(new File("/tmp/harrie/uploads/data/productPictures/"
-                    + id + ".jpg").toPath());
-        }
-        catch (IOException ex) {
-            // TODO - IOException handling
-        }
-
-        return Base64.encode(array);
-    }
+//    @SuppressWarnings("restriction")
+//    public static String verkrijgArtikelAfbeeldingString(Long id) {
+//        byte[] array = null;
+//
+//        try {
+//            array = Files.readAllBytes(new File("/tmp/harrie/uploads/data/productPictures/"
+//                    + id + ".jpg").toPath());
+//        }
+//        catch (IOException ex) {
+//            // TODO - IOException handling
+//        }
+//
+//        return Base64.encode(array);
+//    }
 
     public static void stopDeActuelePrijsInHetArtikel(Artikel artikel) { // TODO - Controleer of de prijs actueel is
 

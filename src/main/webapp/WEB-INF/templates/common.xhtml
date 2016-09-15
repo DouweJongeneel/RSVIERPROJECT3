@@ -3,17 +3,30 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-<h:body>
-    <ui:insert name="header">
-        <ui:include src="/templates/header.xhtml"/>
-    </ui:insert>
-    <ui:insert name="content">
-        <ui:include src="/templates/content.xhtml"/>
-    </ui:insert>
-    <ui:insert name="footer">
-        <ui:include src="/templates/footer.xhtml"/>
-    </ui:insert>
-</h:body>
+<head>
+    <title><ui:insert name="title"> Workshop 3</ui:insert></title>
+</head>
+
+<body>
+    <div id="header">
+        <ui:insert name="header">
+            <ui:include src="/WEB-INF/templates/header.xhtml"/>
+        </ui:insert>
+    </div>
+
+    <div id="content">
+        <ui:insert name="content">
+            <ui:include src="/WEB-INF/templates/content.xhtml"/>
+        </ui:insert>
+    </div>
+
+    <div id="footer">
+        <ui:insert name="footer">
+            <ui:include src="/WEB-INF/templates/footer.xhtml"/>
+        </ui:insert>
+    </div>
+
+</body>
 </html>
