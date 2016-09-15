@@ -5,8 +5,6 @@
  */
 package com.adm.entities;
 
-import com.adm.entities.Prijsartikel;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -65,7 +63,7 @@ public class Prijs implements Serializable {
 	private Collection<Bestelartikel> bestelartikelCollection;
 	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "prijs")
-	private Prijsartikel prijsartikel;
+	private PrijsArtikel prijsArtikel;
 
 	public Prijs() {
 	}
@@ -74,9 +72,7 @@ public class Prijs implements Serializable {
 		this.id = id;
 	}
 
-	public Prijs(Long id, Date datumAanmaak, BigDecimal prijs) {
-		this.id = id;
-		this.datumAanmaak = datumAanmaak;
+	public Prijs(BigDecimal prijs) {
 		this.prijs = prijs;
 	}
 
@@ -113,12 +109,12 @@ public class Prijs implements Serializable {
 		this.bestelartikelCollection = bestelartikelCollection;
 	}
 
-	public Prijsartikel getPrijsartikel() {
-		return prijsartikel;
+	public PrijsArtikel getPrijsArtikel() {
+		return prijsArtikel;
 	}
 
-	public void setPrijsartikel(Prijsartikel prijsartikel) {
-		this.prijsartikel = prijsartikel;
+	public void setPrijsArtikel(PrijsArtikel prijsArtikel) {
+		this.prijsArtikel = prijsArtikel;
 	}
 
 	@Override

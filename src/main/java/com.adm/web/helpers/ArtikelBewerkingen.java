@@ -2,8 +2,9 @@ package com.adm.web.helpers;
 
 import com.adm.entities.Artikel;
 import com.adm.entities.Prijs;
-import com.adm.entities.Prijsartikel;
+import com.adm.entities.PrijsArtikel;
 import com.adm.session.ArtikelFacade;
+import com.adm.session.PrijsArtikelFacade;
 import com.adm.session.PrijsFacade;
 import com.adm.web.forms.ArtikelRegistratieFormulier;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
@@ -14,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +30,16 @@ public class ArtikelBewerkingen {
     @Inject
     private PrijsFacade prijsFacade;
 
+    @Inject
+    private PrijsArtikelFacade prijsArtikelFacade;
+
     public ArtikelBewerkingen() {
     }
 
-    public ArtikelBewerkingen(ArtikelFacade artikelFacade, PrijsFacade prijsFacade) {
+    public ArtikelBewerkingen(ArtikelFacade artikelFacade, PrijsFacade prijsFacade, PrijsArtikelFacade prijsArtikelFacade) {
         this.artikelFacade = artikelFacade;
         this.prijsFacade = prijsFacade;
+        this.prijsArtikelFacade = prijsArtikelFacade;
     }
 
     /**
@@ -73,9 +77,9 @@ public class ArtikelBewerkingen {
                 (ArtikelRegistratieFormulier) session.getAttribute("artikelRegistratieFormulier");
 
         // Toon fouten wanneer het artikelRegistratieFormulier verkeerd is ingevuld
-        if (errors.hasErrors()) {
-            return "/artikel/artikelRegistratie";
-        }
+//        if (errors.hasErrors()) {
+//            return "/artikel/artikelRegistratie";
+//        }
 
 
         // Haal de artikelgegevens uit het artikelRegistratieFormulier
@@ -85,15 +89,21 @@ public class ArtikelBewerkingen {
                 artikelRegistratieFormulier.getArtikelLevertijd(),
                 artikelRegistratieFormulier.isArtikelOpVoorraad());
 
-        artikel = artikelFacade.create(artikel);
-        prijsFacade.create(new Prijs(artikelRegistratieFormulier.getArtikelPrijs(), artikel));
+        artikelFacade.create(artikel); // TODO - wordt het artikelId opgeslagen? hoe werkt dit met entity beans???
+        artikelFacade.flush(); // --> wordt het artikel vanuit de persistence context naar de database gesaved en krijgt het een Id.
+
+        Prijs artikelPrijs = new Prijs(artikelRegistratieFormulier.getArtikelPrijs());
+        prijsFacade.create(artikelPrijs);
+        prijsFacade.flush(); // flush DB voor id
+        PrijsArtikel prijsArtikel = new PrijsArtikel(artikelPrijs.getId(), artikel, artikelPrijs);
+//        prijsArtikelFacade.flush();
 
         // Sla de afbeelding op
         slaAfbeeldingOp(artikel.getArtikelId(), artikelRegistratieFormulier.getArtikelAfbeelding());
         artikel.setArtikelAfbeelding(verkrijgArtikelAfbeeldingString(artikel.getArtikelId()));
 
         // Save flash attribute
-        session.setAttirbute("artikel", artikel);
+        session.setAttribute("artikel", artikel);
         session.setAttribute("id", artikel.getArtikelId());
 
     }
@@ -217,7 +227,7 @@ public class ArtikelBewerkingen {
         return artikelList;
     }
     // TODO - opslaan van artikel met facelets
-    public void slaAfbeeldingOp(Long id, MultipartFile afbeelding) {
+    public void slaAfbeeldingOp(Long id, File afbeelding) {
         try {
             afbeelding.transferTo(new File("/data/productPictures/" +
                     id + ".jpg"));
@@ -244,7 +254,7 @@ public class ArtikelBewerkingen {
 
     public static void stopDeActuelePrijsInHetArtikel(Artikel artikel) { // TODO - Controleer of de prijs actueel is
 
-        ArrayList<Prijsartikel> tempPrijsList = (ArrayList<Prijsartikel>) artikel.getPrijsartikelCollection();
+        ArrayList<PrijsArtikel> tempPrijsList = (ArrayList<PrijsArtikel>) artikel.getPrijsArtikelCollection();
         artikel.setActuelePrijs(((tempPrijsList.get(tempPrijsList.size()-1)).getPrijs()).getPrijs());
     }
 

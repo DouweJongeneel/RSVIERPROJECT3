@@ -5,7 +5,8 @@
  */
 package com.adm.session;
 
-import com.adm.entities.Prijsartikel;
+import com.adm.entities.PrijsArtikel;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +16,7 @@ import javax.persistence.PersistenceContext;
  * @author Albert
  */
 @Stateless
-public class PrijsartikelFacade extends AbstractFacade<Prijsartikel> {
+public class PrijsArtikelFacade extends AbstractFacade<PrijsArtikel> {
 
 	@PersistenceContext(unitName = "workshop3PU")
 	private EntityManager em;
@@ -25,8 +26,8 @@ public class PrijsartikelFacade extends AbstractFacade<Prijsartikel> {
 		return em;
 	}
 
-	public PrijsartikelFacade() {
-		super(Prijsartikel.class);
+	public PrijsArtikelFacade() {
+		super(PrijsArtikel.class);
 	}
 	
 }

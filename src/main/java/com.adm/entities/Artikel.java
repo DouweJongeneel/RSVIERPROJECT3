@@ -79,7 +79,7 @@ public class Artikel implements Serializable {
 	private Collection<Bestelartikel> bestelartikelCollection;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "artikelId")
-	private Collection<Prijsartikel> prijsartikelCollection;
+	private Collection<PrijsArtikel> prijsArtikelCollection;
 
 	@Transient
 	private Prijs prijs;
@@ -170,12 +170,12 @@ public class Artikel implements Serializable {
 	}
 
 	@XmlTransient
-	public Collection<Prijsartikel> getPrijsartikelCollection() {
-		return prijsartikelCollection;
+	public Collection<PrijsArtikel> getPrijsArtikelCollection() {
+		return prijsArtikelCollection;
 	}
 
-	public void setPrijsartikelCollection(Collection<Prijsartikel> prijsartikelCollection) {
-		this.prijsartikelCollection = prijsartikelCollection;
+	public void setPrijsArtikelCollection(Collection<PrijsArtikel> prijsArtikelCollection) {
+		this.prijsArtikelCollection = prijsArtikelCollection;
 	}
 
 	public BigDecimal getActuelePrijs() {

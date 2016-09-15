@@ -4,8 +4,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Artikel Registratie View"/>
-</f:view>
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <f:view>
+        <h:outputLabel value="Artikel Registratie View"/>
+    </f:view>
+</h:head>
+
+<h:body>
+    <!-- METHODE OM AFBEELDING OP TE SLAAN -->
+    <h:form enctype="multipart/form-data">
+        <p:outputLabel value="Name" for="name" />
+        <p:inputText value="#{FileUploadHelper.name}" id="name"/>
+        <br />
+        <p:fileUpload mode="advanced" multiple="true" fileUploadListener="#{FileUploadHelper.handleUpload}" />
+        <p:commandButton value="submit" /> <!-- action="#{FileUploadHelper.doSubmit}" -->
+    </h:form>
+</h:body>
+
 </html>

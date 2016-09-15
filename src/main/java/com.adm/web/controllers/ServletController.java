@@ -1,6 +1,5 @@
 package com.adm.web.controllers;
 
-import com.adm.entities.Artikel;
 import com.adm.web.helpers.ArtikelBewerkingen;
 
 import javax.servlet.ServletException;
