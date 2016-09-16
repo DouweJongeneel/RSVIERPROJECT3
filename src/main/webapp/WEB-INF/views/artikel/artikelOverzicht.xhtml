@@ -4,19 +4,14 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-    <!--Wanneer er geen ui:define tag is wordt de default uit de template geladen, dus ui:define alleen gebruiken voor
-        de content die je ook daadwerkelijk in de huidige view wilt aanpassen/overschrijven-->
-
-    <!--<ui:define name="header">-->
-
-    <!--</ui:define>-->
-
     <ui:define name="content">
         Artikel Overzicht View
+
+        <form action="artikel/registreer" method="get">
+            <input type="submit"
+                   value="nieuw artikel"/>
+        </form>
+
     </ui:define>
-
-    <!--<ui:define name="footer">-->
-
-    <!--</ui:define>-->
 
 </ui:composition>

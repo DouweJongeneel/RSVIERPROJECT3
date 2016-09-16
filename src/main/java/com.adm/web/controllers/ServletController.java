@@ -54,13 +54,13 @@ public class ServletController extends HttpServlet {
 
             artikelBewerkingen.toonArtikel(request);
 
-            userPath = "artikel/toonArtikel";
+            userPath = "/artikel/toonArtikel";
         }
         else if (userPath.equals("/artikel/Wijzig/{artikelId}")) {
 
             artikelBewerkingen.wijzigArtikel(request);
 
-            userPath = "artikel/artikelWijziging";
+            userPath = "/artikel/artikelWijziging";
         }
         else if (userPath.equals("/artikel/verwijder/{artikelId}")) {
             artikelBewerkingen.haalArtikelUitVoorraad(request);
@@ -89,7 +89,7 @@ public class ServletController extends HttpServlet {
 
         String userPath = request.getServletPath();
 
-        if (userPath.equals("/artikel/registreer")){
+        if (userPath.equals("/artikel/verwerkRegistratie")){ // TODO
 
             artikelBewerkingen.verwerkArtikelRegistratie(request);
 
