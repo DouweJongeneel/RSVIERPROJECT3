@@ -2,6 +2,7 @@ package com.adm.web.controllers;
 
 import com.adm.web.helpers.ArtikelBewerkingen;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,13 +18,8 @@ import java.io.IOException;
         "/artikel", "/artikel/", "/artikel/registreer", "/artikel/toon/{artikelId}", "/artikel/wijzig/{artikelId}", "/artikel/verwijder/{artikelId}"})
 public class ServletController extends HttpServlet {
 
+    @EJB
     ArtikelBewerkingen artikelBewerkingen;
-
-    public ServletController() {
-        if (artikelBewerkingen == null) {
-            artikelBewerkingen = new ArtikelBewerkingen();
-        }
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

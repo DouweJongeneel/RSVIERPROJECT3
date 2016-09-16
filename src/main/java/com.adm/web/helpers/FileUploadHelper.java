@@ -25,7 +25,6 @@ public class FileUploadHelper {
         Path folder = Paths.get("/tmp/Harrie/ArtikelAfbeelding");
         String fileName = uploadedFile.getFileName();
         String contentType = uploadedFile.getContentType();
-        byte[] contents = uploadedFile.getContents();
 
         try (InputStream input = uploadedFile.getInputstream()){
 

@@ -7,9 +7,12 @@
       >
     <h:head>
         <title><ui:insert name="title"> Workshop 3 </ui:insert></title>
+        <h:outputStylesheet name="style.css"/>
+        <!--outputStyleSheet pakt je css opmaakt. default gaat name="style.css" naar webapp/resources/{name="style.css"}-->
     </h:head>
 
     <h:body>
+
         <div id="header">
             <ui:insert name="header">
                 <ui:include src="header.xhtml"/>

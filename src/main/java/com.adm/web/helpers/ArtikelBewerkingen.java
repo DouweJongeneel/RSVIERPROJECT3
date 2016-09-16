@@ -9,6 +9,7 @@ import com.adm.session.PrijsFacade;
 import com.adm.web.forms.ArtikelRegistratieFormulier;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -18,6 +19,7 @@ import java.util.List;
 /**
  * Created by douwejongeneel on 13/09/16.
  */
+@Stateless
 public class ArtikelBewerkingen {
 
     @Inject
@@ -212,7 +214,7 @@ public class ArtikelBewerkingen {
 
             Artikel tempArtikel = artikelList.get(i);
             //tempArtikel.setArtikelAfbeelding(verkrijgArtikelAfbeeldingString(tempArtikel.getArtikelId()));
-            stopDeActuelePrijsInHetArtikel(tempArtikel);
+//            stopDeActuelePrijsInHetArtikel(tempArtikel);
 
         }
         return artikelList;
@@ -243,13 +245,13 @@ public class ArtikelBewerkingen {
 //        return Base64.encode(array);
 //    }
 
-    public static void stopDeActuelePrijsInHetArtikel(Artikel artikel) { // TODO - Controleer of de prijs actueel is
+    public void stopDeActuelePrijsInHetArtikel(Artikel artikel) { // TODO - Controleer of de prijs actueel is
 
         ArrayList<PrijsArtikel> tempPrijsList = (ArrayList<PrijsArtikel>) artikel.getPrijsArtikelCollection();
         artikel.setActuelePrijs(((tempPrijsList.get(tempPrijsList.size()-1)).getPrijs()).getPrijs());
     }
 
-    public static String hanteerNaamConventie(String string) {
+    public String hanteerNaamConventie(String string) {
         StringBuilder builder = new StringBuilder();
         int indexToUpperCase = 0;
 
