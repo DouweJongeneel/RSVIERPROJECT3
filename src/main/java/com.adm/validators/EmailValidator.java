@@ -20,8 +20,6 @@ public class EmailValidator implements Validator {
 			throws ValidatorException {
 
 		String email = value.toString();
-
-		System.out.println("Matched: " + email.matches("(^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$)"));
 		
 		if (!email.matches("(^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$)")) {
 			FacesMessage msg = new FacesMessage("E-mail validatie gefaald", "Ongeldig e-mail adres");

@@ -8,6 +8,7 @@ package com.adm.entities;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import javax.ejb.Stateless;
 import javax.enterprise.inject.Model;
 import javax.inject.Named;
 import javax.persistence.Basic;
@@ -34,7 +35,6 @@ import javax.validation.constraints.Size;
 @NamedQueries({
 	@NamedQuery(name = "Klant.findAll", query = "SELECT k FROM Klant k"),
 	@NamedQuery(name = "Klant.findById", query = "SELECT k FROM Klant k WHERE k.id = :id")})
-@Model
 public class Klant implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -66,7 +66,7 @@ public class Klant implements Serializable {
 	private String password;
 	
 	@Transient
-	private String tempPassword;
+	private String tempPassword = "********";
 
 	@NotNull
 	@Size(min = 1, max = 255)

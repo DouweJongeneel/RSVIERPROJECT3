@@ -24,9 +24,6 @@ public class ServletController implements Serializable {
 	@EJB
 	KlantFacade klantFacade;
 
-	@EJB
-	Klant klant;
-	
 	public String gotoHome() {
 		return "/home";
 	}
@@ -35,7 +32,7 @@ public class ServletController implements Serializable {
 	@PostConstruct 
 	public void init(){
 		if(findBean("klant") == null)
-			klant = new Klant();
+			naarSessieVariabele("klant", new Klant());
 	}
 	
 	/**
@@ -88,15 +85,17 @@ public class ServletController implements Serializable {
 	}
 
 	public String registerCustomer() {
-		klant = klantFacade.create(klant);
+		Klant klant = klantFacade.create((Klant)findBean("klant"));
 		naarSessieVariabele("klant", klant);
+		
+		klant.setCanEdit(false);
+		
 		return "klantProfile";
 	}
 //
 	public String gotoCustomerProfile() {
-		klant = (Klant) findBean("klant");
+		Klant klant = (Klant) findBean("klant");
 		klant.setCanEdit(false);
-
 		return "klantProfile";
 	}
 //
@@ -111,13 +110,14 @@ public class ServletController implements Serializable {
 //	}
 //
 	public String editUser() {
-		klant = (Klant)findBean("klant");
+		Klant klant = (Klant)findBean("klant");
 		
-		if(!klant.getTempPassword().isEmpty())
+		if(!klant.getTempPassword().equals("********"))
 			klant.setPassword(klant.getTempPassword());
 		
+		klant.setCanEdit(false);
 		klantFacade.edit(klant);
-		return "/klant/klantModify";
+		return "klantProfile";
 	}
 //
 
