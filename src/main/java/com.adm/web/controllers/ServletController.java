@@ -4,15 +4,12 @@ import com.adm.entities.Klant;
 import com.adm.session.KlantFacade;
 import com.adm.web.helpers.ArtikelBewerkingen;
 import java.io.Serializable;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import javax.ejb.EJB;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 
 @ManagedBean(name = "servletController", eager = true)
 @RequestScoped
@@ -31,8 +28,8 @@ public class ServletController implements Serializable {
 	
 	@PostConstruct 
 	public void init(){
-		if(findBean("klant") == null)
-			naarSessieVariabele("klant", new Klant());
+		if(SessionController.findBean("klant") == null)
+			SessionController.naarSessieVariabele("klant", new Klant());
 	}
 	
 	/**
@@ -85,8 +82,8 @@ public class ServletController implements Serializable {
 	}
 
 	public String registerCustomer() {
-		Klant klant = klantFacade.create((Klant)findBean("klant"));
-		naarSessieVariabele("klant", klant);
+		Klant klant = klantFacade.create((Klant)SessionController.findBean("klant"));
+		SessionController.naarSessieVariabele("klant", klant);
 		
 		klant.setCanEdit(false);
 		
@@ -94,7 +91,7 @@ public class ServletController implements Serializable {
 	}
 //
 	public String gotoCustomerProfile() {
-		Klant klant = (Klant) findBean("klant");
+		Klant klant = (Klant) SessionController.findBean("klant");
 		klant.setCanEdit(false);
 		return "klantProfile";
 	}
@@ -110,7 +107,7 @@ public class ServletController implements Serializable {
 //	}
 //
 	public String editUser() {
-		Klant klant = (Klant)findBean("klant");
+		Klant klant = (Klant)SessionController.findBean("klant");
 		
 		if(!klant.getTempPassword().equals("********"))
 			klant.setPassword(klant.getTempPassword());
@@ -119,20 +116,6 @@ public class ServletController implements Serializable {
 		klantFacade.edit(klant);
 		return "klantProfile";
 	}
-//
 
-	//Haal een sessie-object op
-	public static Object findBean(String key) {
-		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-		Map<String, Object> sessionMap = externalContext.getSessionMap();
-		return sessionMap.get(key);
-	}
-	
-	//Schrijf een object naar de sessie toe
-	public static void naarSessieVariabele(String key, Object value){
-		//Set klant als Sessie variabele
-		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-		Map<String, Object> sessionMap = externalContext.getSessionMap();
-		sessionMap.put(key, value);
-	}
+
 }

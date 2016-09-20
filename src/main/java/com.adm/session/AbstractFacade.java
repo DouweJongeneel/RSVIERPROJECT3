@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.validation.*;
 
 /**
@@ -29,8 +30,7 @@ public abstract class AbstractFacade<T> {
 	protected abstract EntityManager getEntityManager();
 
 	public T create(T entity) {
-		
-		
+	//Houd bij op welke field-validator in de entity iets mis gaat
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
     Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
@@ -62,6 +62,12 @@ public abstract class AbstractFacade<T> {
 		return getEntityManager().find(entityClass, id);
 	}
 
+	public List<T> withNamedQuery(String namedQuery, String variable){
+      Query query = getEntityManager().createNamedQuery(namedQuery, entityClass);
+	  query.setParameter("email", variable);
+	  return query.getResultList();
+	}
+	
 	public List<T> findAll() {
 		javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
 		cq.select(cq.from(entityClass));
