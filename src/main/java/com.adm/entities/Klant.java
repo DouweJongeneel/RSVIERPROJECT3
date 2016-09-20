@@ -7,19 +7,23 @@ package com.adm.entities;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
+import javax.enterprise.inject.Model;
+import javax.inject.Named;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -27,98 +31,100 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "klant")
-@XmlRootElement
 @NamedQueries({
 	@NamedQuery(name = "Klant.findAll", query = "SELECT k FROM Klant k"),
-	@NamedQuery(name = "Klant.findById", query = "SELECT k FROM Klant k WHERE k.id = :id"),
-	@NamedQuery(name = "Klant.findByAchternaam", query = "SELECT k FROM Klant k WHERE k.achternaam = :achternaam"),
-	@NamedQuery(name = "Klant.findByDatumAanmaak", query = "SELECT k FROM Klant k WHERE k.datumAanmaak = :datumAanmaak"),
-	@NamedQuery(name = "Klant.findByDatumGewijzigd", query = "SELECT k FROM Klant k WHERE k.datumGewijzigd = :datumGewijzigd"),
-	@NamedQuery(name = "Klant.findByEmail", query = "SELECT k FROM Klant k WHERE k.email = :email"),
-	@NamedQuery(name = "Klant.findByKlantActief", query = "SELECT k FROM Klant k WHERE k.klantActief = :klantActief"),
-	@NamedQuery(name = "Klant.findByKlantRol", query = "SELECT k FROM Klant k WHERE k.klantRol = :klantRol"),
-	@NamedQuery(name = "Klant.findByPassword", query = "SELECT k FROM Klant k WHERE k.password = :password"),
-	@NamedQuery(name = "Klant.findByTussenvoegsel", query = "SELECT k FROM Klant k WHERE k.tussenvoegsel = :tussenvoegsel"),
-	@NamedQuery(name = "Klant.findByVoornaam", query = "SELECT k FROM Klant k WHERE k.voornaam = :voornaam")})
+	@NamedQuery(name = "Klant.findById", query = "SELECT k FROM Klant k WHERE k.id = :id")})
+@Model
 public class Klant implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
+	@GeneratedValue(strategy = IDENTITY)
+	@Basic(optional = false)
+	@Column(name = "id")
 	private Long id;
-	
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "achternaam")
+
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "voornaam")
+	private String voornaam;
+
+	@NotNull
+	@Size(max = 255)
+	@Column(name = "tussenvoegsel")
+	private String tussenvoegsel;
+
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "achternaam")
 	private String achternaam;
-	
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "datumAanmaak")
-	private String datumAanmaak;
-	
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "datumGewijzigd")
-	private String datumGewijzigd;
-	
-	// @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "email")
-	private String email;
-	
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "klantActief")
-	private String klantActief;
-	
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "klantRol")
-	private String klantRol;
-	
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "password")
+
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "password")
 	private String password;
 	
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "tussenvoegsel")
-	private String tussenvoegsel;
-	
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "voornaam")
-	private String voornaam;
-	
+	@Transient
+	private String tempPassword;
+
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "email")
+	private String email;
+
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "datumAanmaak")
+	private String datumAanmaak;
+
+	@Size(min = 1, max = 255)
+	@Column(name = "datumGewijzigd")
+	private String datumGewijzigd;
+
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "klantActief")
+	private String klantActief;
+
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "klantRol")
+	private String klantRol;
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klantId")
 	private Collection<Betaling> betalingCollection;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klant")
 	private Collection<Klantadresadrestype> klantadresadrestypeCollection;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klantId")
 	private Collection<Bestelling> bestellingCollection;
 
+	@Transient
+	boolean canEdit = false; 
+	
 	public Klant() {
+		datumAanmaak = new Date(System.currentTimeMillis()).toString();
+		this.klantActief = "1";
+		this.klantRol = "ROLE_USER";
 	}
 
 	public Klant(Long id) {
 		this.id = id;
+		this.klantActief = "1";
+		datumAanmaak = new Date(System.currentTimeMillis()).toString();
+	}
+
+	public Klant(String voornaam, String tussenvoegsel, String achternaam, String email, String password) {
+		this.achternaam = achternaam;
+		this.email = email;
+		this.klantActief = "1";
+		this.klantRol = "ROLE_USER";
+		this.password = password;
+		this.tussenvoegsel = tussenvoegsel;
+		this.voornaam = voornaam;
+		datumAanmaak = new Date(System.currentTimeMillis()).toString();
 	}
 
 	public Klant(Long id, String achternaam, String datumAanmaak, String datumGewijzigd, String email, String klantActief, String klantRol, String password, String tussenvoegsel, String voornaam) {
@@ -197,6 +203,14 @@ public class Klant implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public String getTempPassword() {
+		return tempPassword;
+	}
+
+	public void setTempPassword(String tempPassword) {
+		this.tempPassword = tempPassword;
+	}
 
 	public String getTussenvoegsel() {
 		return tussenvoegsel;
@@ -214,7 +228,6 @@ public class Klant implements Serializable {
 		this.voornaam = voornaam;
 	}
 
-	@XmlTransient
 	public Collection<Betaling> getBetalingCollection() {
 		return betalingCollection;
 	}
@@ -223,7 +236,6 @@ public class Klant implements Serializable {
 		this.betalingCollection = betalingCollection;
 	}
 
-	@XmlTransient
 	public Collection<Klantadresadrestype> getKlantadresadrestypeCollection() {
 		return klantadresadrestypeCollection;
 	}
@@ -232,13 +244,20 @@ public class Klant implements Serializable {
 		this.klantadresadrestypeCollection = klantadresadrestypeCollection;
 	}
 
-	@XmlTransient
 	public Collection<Bestelling> getBestellingCollection() {
 		return bestellingCollection;
 	}
 
 	public void setBestellingCollection(Collection<Bestelling> bestellingCollection) {
 		this.bestellingCollection = bestellingCollection;
+	}
+
+	public boolean isCanEdit() {
+		return canEdit;
+	}
+
+	public void setCanEdit(boolean canEdit) {
+		this.canEdit = canEdit;
 	}
 
 	@Override
@@ -250,7 +269,6 @@ public class Klant implements Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
 		if (!(object instanceof Klant)) {
 			return false;
 		}
@@ -263,7 +281,7 @@ public class Klant implements Serializable {
 
 	@Override
 	public String toString() {
-		return "com.mycompany.rsvierproject3.Klant[ id=" + id + " ]";
+		return String.format("Voornaam: %s\nAchternaam: %s\nTussenvoegsel: %s\nEmail: %s\nWachtwoord: %s", voornaam, achternaam, tussenvoegsel, email, password);
 	}
-	
+
 }

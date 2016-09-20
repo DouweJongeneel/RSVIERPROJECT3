@@ -1,35 +1,27 @@
 <ui:composition
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:h="http://xmlns.jcp.org/jsf/html"
-        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
->
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	>
 
     <div id="window-header">
 
         <h1> Workshop 3 Java EE</h1>
-    <table align="center">
-        <tr>
-            <td>
-                <form action="artikel" method="get">
-                    <input type="submit"
-                           value="artikel"/>
-                </form>
-            </td>
-            <td>
-                <form action="klant" method="get">
-                    <input type="submit"
-                           value="klant"/>
-                </form>
-            </td>
-            <td>
-                <form action="bestelling" method="get">
-                    <input type="submit"
-                           value="bestelling"/>
-                </form>
-            </td>
-        </tr>
-    </table>
 
+		<h:form>
+			<h:commandButton action="#{servletController.moveToKlantRegister}" value="Register"/>
+		</h:form>
+
+		<h:form>
+			<h:commandButton action="#{sessionController.moveToLogin}" value="Login"/>
+		</h:form>
+<h:form>
+			<h:commandButton action="#{servletController.gotoCustomerProfile}" value="Profile"/>
+		</h:form>
+		
+		
+		
     </div>
 
 </ui:composition>

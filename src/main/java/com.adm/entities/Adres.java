@@ -4,13 +4,15 @@
  * and open the template in the editor.
  */
 package com.adm.entities;
- 
+
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -44,65 +46,63 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Adres implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
+	@Basic(optional = false)
+	@Column(name = "id")
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
-	
+
 	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "adresActief")
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "adresActief")
 	private String adresActief;
-	
+
 	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "datumAanmaak")
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "datumAanmaak")
 	private String datumAanmaak;
-	
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "datumGewijzigd")
+
+	@Size(min = 1, max = 255)
+	@Column(name = "datumGewijzigd")
 	private String datumGewijzigd;
-	
+
 	@Basic(optional = false)
-    @NotNull
-    @Column(name = "huisnummer")
+	@NotNull
+	@Column(name = "huisnummer")
 	private int huisnummer;
-	
+
 	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "postcode")
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "postcode")
 	private String postcode;
-	
+
 	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "straatnaam")
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "straatnaam")
 	private String straatnaam;
-	
+
 	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "toevoeging")
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "toevoeging")
 	private String toevoeging;
-	
+
 	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "woonplaats")
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "woonplaats")
 	private String woonplaats;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "adres")
 	private Collection<Klantadresadrestype> klantadresadrestypeCollection;
-	
+
 	@JoinColumn(name = "type_id", referencedColumnName = "id")
-    @ManyToOne
+	@ManyToOne
 	private Adrestype typeId;
 
 	public Adres() {
@@ -222,13 +222,13 @@ public class Adres implements Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
+
 		if (!(object instanceof Adres)) {
 			return false;
-		}
-		Adres other = (Adres) object;
-		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-			return false;
+		} else {
+			Adres otherAdres = (Adres) object;
+			if(!postcode.equals(otherAdres.getPostcode()) && huisnummer != otherAdres.getHuisnummer() && !toevoeging.equals(otherAdres.getToevoeging()))
+				return false;
 		}
 		return true;
 	}
@@ -237,5 +237,5 @@ public class Adres implements Serializable {
 	public String toString() {
 		return "com.mycompany.rsvierproject3.Adres[ id=" + id + " ]";
 	}
-	
+
 }

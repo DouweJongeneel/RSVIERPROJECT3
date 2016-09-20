@@ -7,7 +7,7 @@ import com.adm.session.ArtikelFacade;
 import com.adm.session.PrijsArtikelFacade;
 import com.adm.session.PrijsFacade;
 import com.adm.web.forms.ArtikelRegistratieFormulier;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+//import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

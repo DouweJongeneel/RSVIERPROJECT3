@@ -1,130 +1,138 @@
 package com.adm.web.controllers;
 
+import com.adm.entities.Klant;
+import com.adm.session.KlantFacade;
 import com.adm.web.helpers.ArtikelBewerkingen;
+import java.io.Serializable;
+import java.util.Map;
+import javax.annotation.PostConstruct;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
-/**
- * Created by douwejongeneel on 09/09/16.
- */
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
-@WebServlet(name = "servletController", loadOnStartup = 1, urlPatterns={"/", "/home",
-        "/artikel", "/artikel/", "/artikel/registreer", "/artikel/toon/{artikelId}", "/artikel/wijzig/{artikelId}", "/artikel/verwijder/{artikelId}"})
-public class ServletController extends HttpServlet {
+@ManagedBean(name = "servletController", eager = true)
+@RequestScoped
+public class ServletController implements Serializable {
 
-    @EJB
-    ArtikelBewerkingen artikelBewerkingen;
+	@EJB
+	ArtikelBewerkingen artikelBewerkingen;
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@EJB
+	KlantFacade klantFacade;
 
-        String userPath = request.getServletPath();
+	@EJB
+	Klant klant;
+	
+	public String gotoHome() {
+		return "/home";
+	}
 
-        // if action is called
-        if (userPath.equals("/home")) {
+	
+	@PostConstruct 
+	public void init(){
+		if(findBean("klant") == null)
+			klant = new Klant();
+	}
+	
+	/**
+	 * ARTIKEL METHODES
+	 */
+	public String gotoArticleOverview() {
 
-        }
+//		artikelBewerkingen.maakArtikelOverzicht(request);
+		// stuur de client naar het artikel overzicht
+		return "/artikel/artikelOverzicht";
+	}
 
-        /**
-         *  ARTIKEL METHODES
-         */
-        else if (userPath.equals("/artikel") || userPath.equals("/artikel/")) {
+	public String gotoRegisterArticle() {
+//		artikelBewerkingen.maakArtikelRegistratieFormulier(request);
+		return "/artikel/artikelRegistratie";
+	}
 
-            artikelBewerkingen.maakArtikelOverzicht(request);
+	public String gotoArticle() {
 
-            // stuur de client naar het artikel overzicht
-            userPath = "/artikel/artikelOverzicht";
+		// Stuur de client door naar de artikelRegistratie view
+//		artikelBewerkingen.toonArtikel(request);
+		return "/artikel/toonArtikel";
+	}
 
-        }
+	public String gotoAlterArticle() {
 
-        else if (userPath.equals("/artikel/registreer")) {
+//		artikelBewerkingen.wijzigArtikel(request);
+		return "/artikel/artikelWijziging";
 
-            artikelBewerkingen.maakArtikelRegistratieFormulier(request);
+	}
 
-            // Stuur de client door naar de artikelRegistratie view
-            userPath = "/artikel/artikelRegistratie";
-        }
-        else if (userPath.equals("/artikel/toon/{artikelId}")) {
+	public String gotoDeleteArticle() {
+//		artikelBewerkingen.haalArtikelUitVoorraad(request);
 
-            artikelBewerkingen.toonArtikel(request);
+		// If the direct is from the product profile page, redirect to profilepage instead of product list.
+//			if ((Integer) request.getAttribute("fromProfilePage") == 1) {
+//				return = "redirect:/artikel/toon/{artikelId}";
+//			}
+		// Return to the productlist page
+		return "redirect/artikel/";
+	}
 
-            userPath = "/artikel/toonArtikel";
-        }
-        else if (userPath.equals("/artikel/Wijzig/{artikelId}")) {
+	/**
+	 * Klant methodes
+	 *
+	 */
+	public String moveToKlantRegister() {
 
-            artikelBewerkingen.wijzigArtikel(request);
+		return "klantRegister";
+	}
 
-            userPath = "/artikel/artikelWijziging";
-        }
-        else if (userPath.equals("/artikel/verwijder/{artikelId}")) {
-            artikelBewerkingen.haalArtikelUitVoorraad(request);
+	public String registerCustomer() {
+		klant = klantFacade.create(klant);
+		naarSessieVariabele("klant", klant);
+		return "klantProfile";
+	}
+//
+	public String gotoCustomerProfile() {
+		klant = (Klant) findBean("klant");
+		klant.setCanEdit(false);
 
-            // If the direct is from the product profile page, redirect to profilepage instead of product list.
-            if ((Integer)request.getAttribute("fromProfilePage") == 1) {
-                userPath = "redirect:/artikel/toon/{artikelId}";
-            }
+		return "klantProfile";
+	}
+//
+//	public String gotoCustomerList() {
+//		klantBewerkingen.showProfile(request, response);
+//		return "/klant/klantenLijst";
+//	}
+//
+//	public String gotoToggleCustomerStatus() {
+//		klantBewerkingen.tumbleStatusClient(request, response);
+//		return "/klant/klantenLijst";
+//	}
+//
+	public String editUser() {
+		klant = (Klant)findBean("klant");
+		
+		if(!klant.getTempPassword().isEmpty())
+			klant.setPassword(klant.getTempPassword());
+		
+		klantFacade.edit(klant);
+		return "/klant/klantModify";
+	}
+//
 
-            // Return to the productlist page
-            userPath = "redirect:/artikel/";
-        }
-
-        // For all unhandled request redirect the user to the home page
-        else {
-            userPath = "/home";
-        }
-
-        // use requestDispatcher to forward request internally and handle possible exceptions
-        forwardRequestInternally(request, response, userPath);
-
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        String userPath = request.getServletPath();
-
-        if (userPath.equals("/artikel/verwerkRegistratie")){ // TODO
-
-            artikelBewerkingen.verwerkArtikelRegistratie(request);
-
-            // Toon de client het gecreeerde artikel
-            userPath = "redirect:/artikel/toon/{artikelId}";
-
-        }
-        else if(userPath.equals("/artikel/artikelWijziging")) {
-
-            artikelBewerkingen.verwerkArtikelWijziging(request);
-
-            // Toon het resultaat van de wijziging
-            userPath = "redirect:/artikel/toon/{artikelId}";
-
-        }
-
-        // use requestDispatcher to forward request internally and handle possible exceptions
-        forwardRequestInternally(request, response, userPath);
-
-    }
-
-    /*
-    Utility Methods
-     */
-
-    public void forwardRequestInternally(HttpServletRequest request, HttpServletResponse response, String userPath) {
-
-        String url = "WEB-INF/views" + userPath + ".xhtml";
-
-        try {
-            request.getRequestDispatcher(url).forward(request, response);
-        } catch (ServletException e) {
-            e.printStackTrace(); // TODO - eligently handle exceptions
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	//Haal een sessie-object op
+	public static Object findBean(String key) {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		Map<String, Object> sessionMap = externalContext.getSessionMap();
+		return sessionMap.get(key);
+	}
+	
+	//Schrijf een object naar de sessie toe
+	public static void naarSessieVariabele(String key, Object value){
+		//Set klant als Sessie variabele
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		Map<String, Object> sessionMap = externalContext.getSessionMap();
+		sessionMap.put(key, value);
+	}
 }

@@ -75,7 +75,7 @@
 //
 //		HttpSession session = request.getSession();
 //		
-//		List<Bestelartikel> bestelArtikelen = null; //bestellingDAO.findByBestellingId(bestelId); //TODO fix met named query
+//		List<Bestelartikel> bestelArtikelen = null; //bestellingDAO.findByBestellingId(bestelId);
 //		Bestelling bestelling = bestellingDAO.find(bestelId);
 //
 //		BigDecimal totaal = totaalPrijsBestelling(bestelArtikelen.iterator());
@@ -97,7 +97,7 @@
 //		Klant klant = (Klant)session.getAttribute("klant");
 //
 //		Bestelling bestelling = new Bestelling();
-////		bestelling.setBestelNummer(Calendar.getInstance().get(Calendar.YEAR) + "-" + bestellingDAO.getCount()); TODO bestelling teller aanmaken
+////		bestelling.setBestelNummer(Calendar.getInstance().get(Calendar.YEAR) + "-" + bestellingDAO.getCount()); 
 //		
 //		bestelling.setKlantId(klant);
 //		bestelling.setDatumAanmaak(new Date().toString());
