@@ -1,0 +1,48 @@
+<ui:composition template="/WEB-INF/templates/common.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="content">
+
+		<h:form>
+		<p:panelGrid id ="registerKlant" columns = "3">
+			<p:outputLabel value ="Voornaam" />
+			<p:inputText id="voornaam" size ="20" label="Voornaam" required="true" value="#{sessionScope.klant.voornaam}">
+				<f:validateLength for="voornaam" minimum="2" maximum="20" />
+			</p:inputText>
+			<p:message for="voornaam" style="color:red" />
+
+			<p:outputLabel value ="Tussenvoegsel" />
+			<p:inputText id="tussenvoegsel" size ="20" label="Tussenvoegsel" required="false" value="#{sessionScope.klant.tussenvoegsel}">
+				<f:validateLength for="tussenvoegsel" maximum="20" />
+			</p:inputText>
+			<p:message for="tussenvoegsel" style="color:red" />
+
+			<p:outputLabel value ="Achternaam" />
+			<p:inputText id="achternaam" size ="20" label="Achternaam" required="true" value="#{sessionScope.klant.achternaam}">
+				<f:validateLength for="achternaam" minimum="2" maximum="20" />
+			</p:inputText>
+			<p:message for="achternaam" style="color:red" />
+
+			<p:outputLabel value ="E-mail" />
+			<p:inputText id="email" size ="20" label="E-mail" required="true" value="#{sessionScope.klant.email}">
+				<f:validator validatorId="com.adm.validators.EmailValidator" />
+			</p:inputText>
+			<p:message for="email" style="color:red" />
+
+			<p:outputLabel value ="Password" />
+			<p:password id="password" size="20" label="Password" required="true" value="#{sessionScope.klant.password}">
+				<f:validateLength for="password" minimum="8" maximum="100" />
+			</p:password>
+			<p:message for="password" style="color:red" />
+
+			<p:commandButton id="submit" action="#{servletController.registerCustomer}" value="Register"  />
+
+		</p:panelGrid>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

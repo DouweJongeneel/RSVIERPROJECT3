@@ -3,27 +3,13 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	>
+	xmlns:p="http://primefaces.org/ui">
 
-    <div id="window-header">
+	#{bootController.maakMenu('artikelCategorieLijst', 'Catalogus')}
 
-        <h1> Workshop 3 Java EE</h1>
-
-		<h:form>
-			<h:commandButton action="#{servletController.moveToKlantRegister}" value="Register"/>
-		</h:form>
-
-		<h:form>
-			<h:commandButton action="#{sessionController.moveToLogin}" value="Login"/>
-		</h:form>
-		
-		<h:form>
-			<h:commandButton action="#{servletController.gotoCustomerProfile}" value="Profile"/>
-		</h:form>
-
-
-
-    </div>
-
+	<h:form>  
+		<p:growl id="messages"/>
+		<p:menubar model="#{sessionScope.Catalogus}" />
+	</h:form>
 </ui:composition>
 

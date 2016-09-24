@@ -62,9 +62,9 @@ public abstract class AbstractFacade<T> {
 		return getEntityManager().find(entityClass, id);
 	}
 
-	public List<T> withNamedQuery(String namedQuery, String variable){
+	public List<T> withNamedQuery(String namedQuery, String parameter, String variable){
       Query query = getEntityManager().createNamedQuery(namedQuery, entityClass);
-	  query.setParameter("email", variable);
+	  query.setParameter(parameter, variable);
 	  return query.getResultList();
 	}
 	

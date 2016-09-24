@@ -1,0 +1,56 @@
+<ui:composition template="/WEB-INF/templates/common.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+
+		
+        <h1> Nieuw Artikel </h1>
+		<h:form enctype="multipart/form-data">
+			<p:panelGrid id ="registerArticle" columns = "3" >
+
+				<p:outputLabel value="Naam: "/>
+				<p:inputText id="artikelNaam" value="#{articleController.artikelNaam}">
+					<f:validateLength for="artikelNaam" minimum="1" />
+				</p:inputText>
+				<p:message for="artikelNaam" style="color:red" />
+
+				<p:outputLabel value="Prijs: "/>
+				<p:inputText id="artikelPrijs" value="#{articleController.price}">
+					<f:validateDoubleRange for="artikelPrijs" minimum="0" />
+				</p:inputText>
+				<p:message for="artikelPrijs" style="color:red" />
+
+				<p:outputLabel value="levertijd in dagen: "/>
+				<p:inputText id="artikelLevertijd" value="#{articleController.levertijd}">
+					<f:validateDoubleRange for="artikelLevertijd" minimum="0" />
+				</p:inputText>
+				<p:message for="artikelLevertijd" style="color:red" />
+
+				<p:outputLabel value="Artikel type: " />
+				<p:selectOneMenu id="artikelType" value="#{articleController.artikelType}">
+					<f:selectItem itemValue="" itemLabel="Kies 1" />
+						<f:selectItems value="#{sessionScope.artikelCategorieLijst}" var="categorie" itemValue="#{categorie}" itemLabel="#{categorie}" />
+					<f:validateLength for="artikelType" minimum="1" />
+				</p:selectOneMenu>	
+				<p:message for="artikelType" style="color:red" />
+
+				<p:growl id="messages" showDetail="true" />
+
+				<p:fileUpload value="#{fileUploadHelper.file}" mode="simple" skinSimple="true" auto="true"/>
+
+				<p:commandButton value="Submit" ajax="false" actionListener="#{fileUploadHelper.upload}" disabled="false" />
+
+				<p:commandButton id = "submit" value = "Registreer" action="#{articleController.schrijfArtikelNaarDatabase}"/>
+
+			</p:panelGrid>
+		</h:form>
+
+    </ui:define>
+
+</ui:composition>
+
+

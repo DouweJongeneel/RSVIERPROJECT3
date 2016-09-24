@@ -25,29 +25,27 @@ public class SessionController implements Serializable {
 
 	private String password;
 	private String userName;
+	private static String basePath;
 
 	@EJB
 	KlantFacade klantFacade;
-
+	
 	public String moveToLogin() {
-		return "login";
+		return "/pages/klant/login";
 	}
 
-	public String checkLogin(){
-		System.out.println(userName);
-		System.out.println(password);
-	
-		Klant tempKlant = klantFacade.withNamedQuery("Klant.findByEmail", userName).get(0);
-		
+	public String checkLogin() {
+		Klant tempKlant = klantFacade.withNamedQuery("Klant.findByEmail", "email", userName).get(0);
+
 		if (password.equals(tempKlant.getPassword())) {
 			naarSessieVariabele("klant", tempKlant);
-			return "klantProfile";
-		}else{
+			return "/pages/klant/klantProfile";
+		} else {
 			tempKlant = null;
 		}
 		return null;
 	}
-	
+
 	/**
 	 *
 	 * Utility Methoden
@@ -62,26 +60,40 @@ public class SessionController implements Serializable {
 
 	//Schrijf een object naar de sessie toe
 	public static void naarSessieVariabele(String key, Object value) {
-		//Set klant als Sessie variabele
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		Map<String, Object> sessionMap = externalContext.getSessionMap();
 		sessionMap.put(key, value);
 	}
 	
-	public void setUserName(String userName){
+	//Verwijder een object uit de sessie
+	public static void verwijderSessieVariabele(String key) {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		Map<String, Object> sessionMap = externalContext.getSessionMap();
+		sessionMap.remove(key);
+	}
+	
+	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 
-	public void setPassword(String password){
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public String getPassword(){
+	public String getPassword() {
 		return password;
 	}
-	
-	public String getUserName(){
+
+	public String getUserName() {
 		return userName;
 	}
-	
+
+	public static String getBasePath() {
+		return basePath;
+	}
+
+	public static void setBasePath(String basePath) {
+		SessionController.basePath = basePath;
+	}
+
 }
