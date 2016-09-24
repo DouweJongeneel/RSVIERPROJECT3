@@ -6,6 +6,7 @@
 package com.adm.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -55,16 +57,8 @@ public class Bestelartikel implements Serializable {
 	@ManyToOne(optional = false)
 	private Prijs prijsId;
 
+
 	public Bestelartikel() {
-	}
-
-	public Bestelartikel(Long id) {
-		this.id = id;
-	}
-
-	public Bestelartikel(Long id, int aantal) {
-		this.id = id;
-		this.aantal = aantal;
 	}
 
 	public Bestelartikel(Prijs prijs, Artikel artikel, int aantal) {
@@ -73,6 +67,11 @@ public class Bestelartikel implements Serializable {
 		this.aantal = aantal;
 	}
 
+	public String getTotaal(){
+		return String.format("%1.2f", prijsId.getPrijs().multiply(new BigDecimal("" + aantal)).doubleValue());
+	}
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -122,15 +121,13 @@ public class Bestelartikel implements Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
 		if (!(object instanceof Bestelartikel)) {
 			return false;
 		}
-		Bestelartikel other = (Bestelartikel) object;
-		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-			return false;
-		}
-		return true;
+		
+		boolean artikelGelijk = artikelId.getArtikelId() == ((Bestelartikel)object).getArtikelId().getArtikelId();
+		boolean prijsGelijk = ((Bestelartikel)object).getPrijsId().getId() == this.prijsId.getId();
+		return  artikelGelijk && prijsGelijk;
 	}
 
 	@Override

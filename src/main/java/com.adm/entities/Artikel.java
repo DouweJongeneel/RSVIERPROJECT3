@@ -5,14 +5,23 @@
  */
 package com.adm.entities;
 
+import com.adm.web.controllers.SessionController;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -47,8 +56,8 @@ public class Artikel implements Serializable {
 
 	@Id
     @Basic(optional = false)
-    @NotNull
     @Column(name = "artikelId")
+	@GeneratedValue(strategy = IDENTITY)
 	private Long artikelId;
 
 	@Basic(optional = false)
@@ -78,18 +87,9 @@ public class Artikel implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "artikelId")
 	private Collection<Bestelartikel> bestelartikelCollection;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "artikelId")
-	private Collection<Prijsartikel> prijsartikelCollection;
-
-	@Transient
-	private Prijs prijs;
-
-	@Transient
-	BigDecimal actuelePrijs;
-
-	@Transient
-	String artikelAfbeelding;
-
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="artikel")
+	private Collection<Prijs> prijsCollection;
+	
 	public Artikel() {
 	}
 
@@ -97,19 +97,19 @@ public class Artikel implements Serializable {
 		this.artikelId = artikelId;
 	}
 
-	public Artikel(String artikelNaam, BigDecimal prijs, Integer VerwachteLevertijd, boolean inAssortiment) {
+	public Artikel(String artikelNaam, Integer verwachteLevertijd, String artikelType) {
 		this.artikelNaam = artikelNaam;
-		this.actuelePrijs = prijs;
 		this.verwachteLevertijd = verwachteLevertijd;
-		this.inAssortiment = inAssortiment;
+		this.artikelType = artikelType;
+		inAssortiment = true;
+		datumAanmaak = new Date(System.currentTimeMillis());
 	}
-
-	public Prijs getPrijs() {
-		return prijs;
-	}
-
-	public void setPrijs(Prijs prijs){
-		this.prijs = prijs;
+	
+	public Artikel(String artikelNaam, Integer verwachteLevertijd, boolean opVoorraad) {
+		this.artikelNaam = artikelNaam;
+		this.verwachteLevertijd = verwachteLevertijd;
+		inAssortiment = opVoorraad;
+		datumAanmaak = new Date(System.currentTimeMillis());
 	}
 
 	public Long getArtikelId() {
@@ -170,28 +170,34 @@ public class Artikel implements Serializable {
 	}
 
 	@XmlTransient
-	public Collection<Prijsartikel> getPrijsartikelCollection() {
-		return prijsartikelCollection;
+	public Collection<Prijs> getPrijsCollection() {
+		return prijsCollection;
 	}
 
-	public void setPrijsartikelCollection(Collection<Prijsartikel> prijsartikelCollection) {
-		this.prijsartikelCollection = prijsartikelCollection;
+	public void setPrijsCollection(Collection<Prijs> prijsCollection) {
+		this.prijsCollection = prijsCollection;
 	}
 
-	public BigDecimal getActuelePrijs() {
-		return actuelePrijs;
+	public Prijs getActuelePrijs() {
+		return ((Prijs)prijsCollection.toArray()[prijsCollection.size()-1]);
 	}
 
-	public void setActuelePrijs(BigDecimal actuelePrijs) {
-		this.actuelePrijs = actuelePrijs;
+	public byte[] getImage() {
+		File image = new File(SessionController.getBasePath() + "JEE/artikel/" + artikelId + ".jpg");
+
+		try {
+			return Files.readAllBytes(image.toPath());
+		} catch (IOException ex) {
+			Logger.getLogger(Artikel.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return null;
 	}
 
-	public String getArtikelAfbeelding() {
-		return artikelAfbeelding;
-	}
-
-	public void setArtikelAfbeelding(String artikelAfbeelding) {
-		this.artikelAfbeelding = artikelAfbeelding;
+	public void addPrijsAanCollectie(Prijs prijs){
+		if(prijsCollection == null){
+			prijsCollection = new ArrayList<Prijs>();
+		}
+		prijsCollection.add(prijs);
 	}
 
 	@Override
@@ -203,7 +209,6 @@ public class Artikel implements Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
 		if (!(object instanceof Artikel)) {
 			return false;
 		}
@@ -216,7 +221,7 @@ public class Artikel implements Serializable {
 
 	@Override
 	public String toString() {
-		return "com.mycompany.rsvierproject3.Artikel[ artikelId=" + artikelId + " ]";
+		return artikelNaam + " " + getActuelePrijs().toString();
 	}
 	
 }

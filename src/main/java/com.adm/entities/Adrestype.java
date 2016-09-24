@@ -106,20 +106,16 @@ public class Adrestype implements Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof Adrestype)) {
+		if (!(object instanceof Adrestype)) 
 			return false;
-		}
-		Adrestype other = (Adrestype) object;
-		if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+		else if(!adresType.equals(((Adrestype)object).getAdresType()))
 			return false;
-		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "com.mycompany.rsvierproject3.Adrestype[ id=" + id + " ]";
+		return adresType;
 	}
 	
 }

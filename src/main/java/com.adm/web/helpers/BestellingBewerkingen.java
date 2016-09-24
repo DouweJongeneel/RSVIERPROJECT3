@@ -19,7 +19,7 @@
 //import com.adm.entities.Factuur;
 //import com.adm.entities.Klant;
 //import com.adm.entities.Prijs;
-//import com.adm.entities.Prijsartikel;
+//import com.adm.entities.PrijsArtikel;
 //import javax.inject.Inject;
 //import javax.servlet.http.HttpServletRequest;
 //
@@ -75,7 +75,7 @@
 //
 //		HttpSession session = request.getSession();
 //		
-//		List<Bestelartikel> bestelArtikelen = null; //bestellingDAO.findByBestellingId(bestelId); //TODO fix met named query
+//		List<Bestelartikel> bestelArtikelen = null; //bestellingDAO.findByBestellingId(bestelId);
 //		Bestelling bestelling = bestellingDAO.find(bestelId);
 //
 //		BigDecimal totaal = totaalPrijsBestelling(bestelArtikelen.iterator());
@@ -97,7 +97,7 @@
 //		Klant klant = (Klant)session.getAttribute("klant");
 //
 //		Bestelling bestelling = new Bestelling();
-////		bestelling.setBestelNummer(Calendar.getInstance().get(Calendar.YEAR) + "-" + bestellingDAO.getCount()); TODO bestelling teller aanmaken
+////		bestelling.setBestelNummer(Calendar.getInstance().get(Calendar.YEAR) + "-" + bestellingDAO.getCount()); 
 //		
 //		bestelling.setKlantId(klant);
 //		bestelling.setDatumAanmaak(new Date().toString());
@@ -208,12 +208,12 @@
 //		List<Bestelartikel> artikelenLijst = new ArrayList<Bestelartikel>();
 //		Iterator<Artikel> it = artikelen.iterator();
 //		Artikel art;
-//		Prijsartikel pr = new Prijsartikel();
+//		PrijsArtikel pr = new PrijsArtikel();
 //		
 //		while(it.hasNext()){
 //
 //			art = it.next();
-//			Iterator<Prijsartikel> prijsIt = art.getPrijsartikelCollection().iterator();
+//			Iterator<PrijsArtikel> prijsIt = art.getPrijsArtikelCollection().iterator();
 //
 //			while(prijsIt.hasNext())
 //				pr = prijsIt.next();

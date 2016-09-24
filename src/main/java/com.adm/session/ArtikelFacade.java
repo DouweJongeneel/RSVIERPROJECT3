@@ -6,6 +6,7 @@
 package com.adm.session;
 
 import com.adm.entities.Artikel;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,6 +28,10 @@ public class ArtikelFacade extends AbstractFacade<Artikel> {
 
 	public ArtikelFacade() {
 		super(Artikel.class);
+	}
+
+	public List<String> haalCategorieTypesOp(){
+		return (List<String>)em.createNativeQuery("SELECT * FROM categorie").getResultList(); 
 	}
 	
 }

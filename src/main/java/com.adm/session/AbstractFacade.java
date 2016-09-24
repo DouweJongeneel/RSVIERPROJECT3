@@ -5,8 +5,12 @@
  */
 package com.adm.session;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.validation.*;
 
 /**
  *
@@ -25,8 +29,23 @@ public abstract class AbstractFacade<T> {
 
 	protected abstract EntityManager getEntityManager();
 
-	public void create(T entity) {
+	public T create(T entity) {
+	//Houd bij op welke field-validator in de entity iets mis gaat
+    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    Validator validator = factory.getValidator();
+    Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
+    if(constraintViolations.size() > 0){
+        Iterator<ConstraintViolation<T>> iterator = constraintViolations.iterator();
+        while(iterator.hasNext()){
+            ConstraintViolation<T> cv = iterator.next();
+            System.out.println(cv.getRootBeanClass().getName()+"."+cv.getPropertyPath() + " " +cv.getMessage());
+        }
+    }else{
+        getEntityManager().persist(entity);
+    }
+		
 		getEntityManager().persist(entity);
+		return entity;
 	}
 
 	public void edit(T entity) {
@@ -37,10 +56,18 @@ public abstract class AbstractFacade<T> {
 		getEntityManager().remove(getEntityManager().merge(entity));
 	}
 
+	public void flush() {getEntityManager().flush();}
+
 	public T find(Object id) {
 		return getEntityManager().find(entityClass, id);
 	}
 
+	public List<T> withNamedQuery(String namedQuery, String parameter, String variable){
+      Query query = getEntityManager().createNamedQuery(namedQuery, entityClass);
+	  query.setParameter(parameter, variable);
+	  return query.getResultList();
+	}
+	
 	public List<T> findAll() {
 		javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
 		cq.select(cq.from(entityClass));
@@ -63,5 +90,4 @@ public abstract class AbstractFacade<T> {
 		javax.persistence.Query q = getEntityManager().createQuery(cq);
 		return ((Long) q.getSingleResult()).intValue();
 	}
-	
 }

@@ -5,8 +5,6 @@
  */
 package com.adm.entities;
 
-import com.adm.entities.Prijsartikel;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -15,7 +13,10 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -42,42 +43,38 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Prijs implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
-	private Long id;
-	
 	@Basic(optional = false)
-    @NotNull
-    @Column(name = "datumAanmaak")
-    @Temporal(TemporalType.DATE)
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "id")
+	private Long id;
+
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "datumAanmaak")
+	@Temporal(TemporalType.DATE)
 	private Date datumAanmaak;
-	
+
 	// @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
 	@Basic(optional = false)
-    @NotNull
-    @Column(name = "prijs")
+	@NotNull
+	@Column(name = "prijs")
 	private BigDecimal prijs;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "prijsId")
 	private Collection<Bestelartikel> bestelartikelCollection;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Artikel artikel;
 	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "prijs")
-	private Prijsartikel prijsartikel;
-
 	public Prijs() {
+		this.datumAanmaak = new Date(System.currentTimeMillis());
 	}
 
-	public Prijs(Long id) {
-		this.id = id;
-	}
-
-	public Prijs(Long id, Date datumAanmaak, BigDecimal prijs) {
-		this.id = id;
-		this.datumAanmaak = datumAanmaak;
+	public Prijs(BigDecimal prijs) {
 		this.prijs = prijs;
+		this.datumAanmaak = new Date(System.currentTimeMillis());
 	}
 
 	public Long getId() {
@@ -113,14 +110,16 @@ public class Prijs implements Serializable {
 		this.bestelartikelCollection = bestelartikelCollection;
 	}
 
-	public Prijsartikel getPrijsartikel() {
-		return prijsartikel;
+	public Artikel getArtikel() {
+		return artikel;
 	}
 
-	public void setPrijsartikel(Prijsartikel prijsartikel) {
-		this.prijsartikel = prijsartikel;
+	public void setArtikel(Artikel artikel) {
+		this.artikel = artikel;
 	}
 
+	
+	
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -130,7 +129,6 @@ public class Prijs implements Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
 		if (!(object instanceof Prijs)) {
 			return false;
 		}
@@ -143,7 +141,7 @@ public class Prijs implements Serializable {
 
 	@Override
 	public String toString() {
-		return "com.mycompany.rsvierproject3.Prijs[ id=" + id + " ]";
+		return prijs.toString();
 	}
-	
+
 }

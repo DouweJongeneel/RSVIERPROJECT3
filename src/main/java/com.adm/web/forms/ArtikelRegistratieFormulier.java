@@ -1,5 +1,6 @@
 package com.adm.web.forms;
 
+import java.io.File;
 import java.math.BigDecimal;
 
 import javax.validation.constraints.Min;
@@ -25,7 +26,7 @@ public class ArtikelRegistratieFormulier {
 
     private boolean artikelOpVoorraad;
 
-    // private MultipartFile artikelAfbeelding; TODO - artikel afbeelding!!!
+    private File artikelAfbeelding;
 
     public ArtikelRegistratieFormulier() {
     }
@@ -54,9 +55,9 @@ public class ArtikelRegistratieFormulier {
         return artikelOpVoorraad;
     }
 
-//    public MultipartFile getArtikelAfbeelding() {
-//        return artikelAfbeelding;
-//    }
+    public File getArtikelAfbeelding() {
+        return artikelAfbeelding;
+    }
 
     public void setArtikelNaam(String artikelNaam) {
         this.artikelNaam = artikelNaam;
@@ -74,8 +75,8 @@ public class ArtikelRegistratieFormulier {
         this.artikelOpVoorraad = artikelOpVoorraad;
     }
 
-//    public void setArtikelAfbeelding(MultipartFile artikelAfbeelding) {
-//        this.artikelAfbeelding = artikelAfbeelding;
-//    }
+    public void setArtikelAfbeelding(File artikelAfbeelding) {
+        this.artikelAfbeelding = artikelAfbeelding;
+    }
 
 }

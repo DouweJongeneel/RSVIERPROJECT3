@@ -1,0 +1,31 @@
+<ui:composition template="/WEB-INF/templates/common.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+		<h:outputLabel value="Toon Artikel"/>
+
+		<h:form>
+
+			<h:panelGrid id ="toonArtikel" columns = "2" border ="0" cellpadding ="1" cellspacing ="0">
+				<p:outputLabel value ="Artikel" />
+				<p:outputLabel id = "artikel" value="#{sessionScope.artikel.artikelNaam}" />
+
+				<p:outputLabel value ="Prijs" />
+				<p:outputLabel id="prijs" value="#{sessionScope.artikel.actuelePrijs.toString()}" />
+
+				<p:outputLabel value ="Verwachte levertijd" />
+				<p:outputLabel value="#{sessionScope.artikel.verwachteLevertijd}" />
+
+				<p:outputLabel value ="Aantal" />
+				<p:inputNumber decimalPlaces="0" id="aantal" value="#{articleController.aantal}"/>
+				
+				<p:commandButton value="Submit" action="#{bestellingController.maakBestelArtikel(sessionScope.artikel, sessionScope.artikel.getActuelePrijs(), articleController.aantal)}" />
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

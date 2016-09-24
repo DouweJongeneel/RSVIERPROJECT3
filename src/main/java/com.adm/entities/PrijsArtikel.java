@@ -27,9 +27,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "prijsartikel")
 @XmlRootElement
 @NamedQueries({
-	@NamedQuery(name = "Prijsartikel.findAll", query = "SELECT p FROM Prijsartikel p"),
-	@NamedQuery(name = "Prijsartikel.findByPrijsId", query = "SELECT p FROM Prijsartikel p WHERE p.prijsId = :prijsId")})
-public class Prijsartikel implements Serializable {
+	@NamedQuery(name = "Prijsartikel.findAll", query = "SELECT p FROM PrijsArtikel p"),
+	@NamedQuery(name = "Prijsartikel.findByPrijsId", query = "SELECT p FROM PrijsArtikel p WHERE p.prijsId = :prijsId")})
+public class PrijsArtikel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -47,11 +47,14 @@ public class Prijsartikel implements Serializable {
     @OneToOne(optional = false)
 	private Prijs prijs;
 
-	public Prijsartikel() {
+	public PrijsArtikel() {
 	}
 
-	public Prijsartikel(Long prijsId) {
+	public PrijsArtikel(Long prijsId, Artikel artikel, Prijs prijs) {
+
 		this.prijsId = prijsId;
+		this.artikelId = artikel;
+		this.prijs = prijs;
 	}
 
 	public Long getPrijsId() {
@@ -87,11 +90,10 @@ public class Prijsartikel implements Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are not set
-		if (!(object instanceof Prijsartikel)) {
+		if (!(object instanceof PrijsArtikel)) {
 			return false;
 		}
-		Prijsartikel other = (Prijsartikel) object;
+		PrijsArtikel other = (PrijsArtikel) object;
 		if ((this.prijsId == null && other.prijsId != null) || (this.prijsId != null && !this.prijsId.equals(other.prijsId))) {
 			return false;
 		}
@@ -100,7 +102,7 @@ public class Prijsartikel implements Serializable {
 
 	@Override
 	public String toString() {
-		return "com.mycompany.rsvierproject3.Prijsartikel[ prijsId=" + prijsId + " ]";
+		return "com.mycompany.rsvierproject3.PrijsArtikel[ prijsId=" + prijsId + " ]";
 	}
 	
 }
