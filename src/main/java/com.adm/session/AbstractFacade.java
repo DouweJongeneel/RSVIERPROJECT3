@@ -30,44 +30,57 @@ public abstract class AbstractFacade<T> {
 	protected abstract EntityManager getEntityManager();
 
 	public T create(T entity) {
-	//Houd bij op welke field-validator in de entity iets mis gaat
-    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-    Validator validator = factory.getValidator();
-    Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
-    if(constraintViolations.size() > 0){
-        Iterator<ConstraintViolation<T>> iterator = constraintViolations.iterator();
-        while(iterator.hasNext()){
-            ConstraintViolation<T> cv = iterator.next();
-            System.out.println(cv.getRootBeanClass().getName()+"."+cv.getPropertyPath() + " " +cv.getMessage());
-        }
-    }else{
-        getEntityManager().persist(entity);
-    }
-		
-		getEntityManager().persist(entity);
-		return entity;
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
+		if (constraintViolations.size() > 0) {
+			Iterator<ConstraintViolation<T>> iterator = constraintViolations.iterator();
+			while (iterator.hasNext()) {
+				ConstraintViolation<T> cv = iterator.next();
+				System.out.println(cv.getRootBeanClass().getName() + "." + cv.getPropertyPath() + " " + cv.getMessage());
+			}
+		} else {
+			getEntityManager().persist(entity);
+			return entity;
+		}
+		return null;
 	}
 
 	public void edit(T entity) {
-		getEntityManager().merge(entity);
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
+		if (constraintViolations.size() > 0) {
+			Iterator<ConstraintViolation<T>> iterator = constraintViolations.iterator();
+			while (iterator.hasNext()) {
+				ConstraintViolation<T> cv = iterator.next();
+				System.out.println(cv.getRootBeanClass().getName() + "." + cv.getPropertyPath() + " " + cv.getMessage());
+			}
+		} else {
+			getEntityManager().merge(entity);
+		}
 	}
 
 	public void remove(T entity) {
 		getEntityManager().remove(getEntityManager().merge(entity));
 	}
 
-	public void flush() {getEntityManager().flush();}
+	public void flush() {
+		getEntityManager().flush();
+	}
 
 	public T find(Object id) {
 		return getEntityManager().find(entityClass, id);
 	}
 
-	public List<T> withNamedQuery(String namedQuery, String parameter, String variable){
-      Query query = getEntityManager().createNamedQuery(namedQuery, entityClass);
-	  query.setParameter(parameter, variable);
-	  return query.getResultList();
+	public List<T> withNamedQuery(String namedQuery, String[] parameter, String[] variable) {
+		Query query = getEntityManager().createNamedQuery(namedQuery, entityClass);
+		for (int x = 0; x < parameter.length; x++) {
+			query.setParameter(parameter[x], variable[x]);
+		}
+		return query.getResultList();
 	}
-	
+
 	public List<T> findAll() {
 		javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
 		cq.select(cq.from(entityClass));

@@ -1,164 +1,57 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<ui:composition template="/WEB-INF/templates/common.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui">
 
-<head>
-	<title>Harrie &amp; Marie</title>
+    <ui:define name="content">
 
-	<!-- Determine Characterset as UTF8 -->
-	<meta charset="UTF-8" />
+		<h:form id="form">
+			<p:growl id="msgs" showDetail="true"/>
 
-	<!--Will control the visible area for the user. -->
-	<meta name="viewport"
-		  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+			<p:dataTable id="winkelwagen" var="user" value="#{sessionScope.klantenLijst}" style="margin-bottom:20px">
+				<f:facet name="header">
+					Klanten
+				</f:facet>
+				
+				<p:column headerText="Voornaam">
+					<h:outputText value="#{user.voornaam}" />
+				</p:column>
 
-	<!-- Google fonts -->
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700'
-		  rel='stylesheet' type='text/css' />
-	<link
-			href='https://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic'
-			rel="stylesheet" type="text/css" />
+				<p:column headerText="Achternaam">
+					<h:outputText value="#{user.achternaam}" />
+				</p:column>
 
-	<!-- font awesome -->
-	<link rel="stylesheet" type="text/css"
-		  th:href="'//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'" />
+				<p:column headerText="Tussenvoegsel">
+					<h:outputText value="#{user.tussenvoegsel}" />
+				</p:column>
 
-	<!-- bootstrap -->
-	<link rel="stylesheet" type="text/css"
-		  th:href="@{/resources/assets/bootstrap/css/bootstrap.min.css}" />
+				<p:column headerText="E-mail">
+					<h:outputText value="#{user.email}" />
+				</p:column>
 
-	<!-- animate.css -->
-	<link rel="stylesheet" type="text/css"
-		  th:href="@{/resources/assets/animate.css}" />
-
-	<!-- Owl Carousel Assets -->
-	<link rel="stylesheet" type="text/css"
-		  th:href="@{/resources/assets/owl-carousel/owl.carousel.css}" />
-
-	<!-- Custom Stylesheet -->
-	<link rel="stylesheet" type="text/css"
-		  th:href="@{/resources/assets/style.css}" />
-
-	<!-- favicon -->
-	<link rel="shortcut icon" th:href="@{/resources/images/hmlogo.png}"
-		  type="image/x-icon" />
-	<link rel="icon" th:href="@{/resources/images/hmlogo.png}"
-		  type="image/x-icon" />
-
-</head>
-
-<body>
-
-<div id="headerAuthenticated" sec:authorize="isAuthenticated()"
-	 th:include="template :: headerAuthenticated">AUTH</div>
-<div id="header" sec:authorize="isAnonymous()"
-	 th:include="template :: header">NON AUTH</div>
-
-<div id="content">
-
-	<div class="container">
-
-		<div class="content inside-page collection">
-
-			<h2 class="title" th:text = "#{harrie.klant.clientList}">Klantenlijst</h2>
-
-			<div class="breadcrumb"><a th:href="@{/}">Home</a> / Klantenlijst</div>
-
-			<div class="row">
-
-				<div class="col-sm-2 col-xs-6" th:each="klant : ${klantenList}"
-					 th:id="'klant_' + ${klant.getId()}">
-
-					<div class="product">
-						<a th:href="@{/klant/select/{id}(id=${klant.id})}"> <img
-								th:src="@{'data:image/jpeg;base64,'+${plaatjesList.get((klant.id - 1))}}"
-								class="img-responsive" /></a>
-						<div class="col-md-8">
-							<h5>
-								<a th:href="@{/klant/select/{id}(id=${klant.id})}"
-								   th:text="${klant.id + ': ' + klant.voornaam + ' ' + klant.achternaam}">Warm Cloths</a>
-							</h5>
-						</div>
-					</div>
-				</div>
-
-				<!--         <table class="klantList">
-            <tr>
-                <th align="left" th:text="#{harrie.klant.client}">Client</th>
-                <th align="left" th:text="#{harrie.klant.clientactions}">Actions</th>
-                <th align="left" th:text="#{harrie.klant.profilePicture}">Profile Picture</th>
-            </tr>
-
-            <tr class = "klantList" th:each="klant : ${klantenList}"
-                th:id="'klant_' + ${klant.getId()}">
-
-                <td class="klantList">
-                    <div class="klantAdresHeader"> <span th:text="${klant.email}"></span>
-                        <span class="klantId" th:text="'(ID: ' + ${klant.id} + ')'"></span>
-                        <table>
-                            <tr>
-                                <td><span class="klantInformationItem" th:text="#{harrie.klant.password}">Password:</span></td>
-                                <td><span class="klantInformation" th:text="${klant.password}">-</span></td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div>
-                        <table>
-                            <tr><br/></tr>
-                            <tr>
-                                <td><span class="klantInformationItem" th:text="#{harrie.klant.firstName}">First Name:</span></td>
-                                <td><span class="klantInformation" th:text="${klant.voornaam}">-</span></td>
-                            </tr>
-                            <tr>
-                                <td><span class="klantInformationItem" th:text="#{harrie.klant.prefix}">Prefix:</span></td>
-                                <td><span class="klantInformation" th:text="${klant.tussenvoegsel}">-</span></td>
-                            </tr>
-                            <tr>
-                                <td><span class="klantInformationItem" th:text="#{harrie.klant.lastName}">Last Name</span></td>
-                                <td><span class="klantInformation" th:text="${klant.achternaam}">-</span></td>
-                            </tr>
-                            <tr>
-                                <td><span class="klantInformationItem" th:text="#{harrie.klant.dateCreated}">Date Created</span></td>
-                                <td><span class="klantInformation" th:text="${klant.datumAanmaak}">-</span></td>
-                            </tr>
-                            <tr>
-                                <td><span class="klantInformationItem" th:text="#{harrie.klant.dateModified}">Date Modified</span></td>
-                                <td><span class="klantInformation" th:text="${klant.datumGewijzigd}">-</span></td>
-                            </tr>
-                            <tr>
-                                <td><span class="klantInformationItem" th:text="#{harrie.klant.active}">Active</span></td>
-                                <td><span class="klantInformation" th:text="${klant.klantActief}">-</span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </td>
-
-                <td class = "klantList">
-                    <span><a th:href="@{/klant/select/{id}(id=${klant.id})}" th:text="#{harrie.actions.select}">Select</a></span><br />
-                    <span><a th:href="@{/klant/modify/{id}(id=${klant.id})}" th:text="#{harrie.actions.modify}">Modify</a></span><br />
-                    <span><a th:href="@{/klant/tumble/{id}(id=${klant.id})}" th:text="#{harrie.actions.tumble}">Tumble Status</a></span><br />
-                </td>
-
-                <td class = "klantListProfilePicture">
-                    <span><img class="profilePicture" th:src="@{'data:image/jpeg;base64,'+${plaatjesList.get((klant.id - 1))}}" /></span>
-                </td>
-
-            </tr>
-        </table>
-         -->
-			</div>
-		</div> <!-- inside page -->
-	</div> <!-- container -->
-</div>
-
-<script th:src="@{/resources/assets/script.js}"></script>
-<script th:src="@{/resources/assets/respond.js}"></script>
-<script th:src="@{/resources/assets/owl-carousel/owl.carousel.min.js}"></script>
-<script th:src="@{/resources/assets/jquery.js}"></script>
-<script th:src="@{/resources/assets/bootstrap/js/bootstrap.js}"></script>
-
-<div id="footer" th:include="template :: footer"></div>
+				<!-- adres hier -->
 
 
-</body>
-</html>
+				<p:column headerText="Datum aanmaak">
+					<h:outputText value="#{user.datumAanmaak}" />
+				</p:column>
+
+				<p:column headerText="Laatst gewijzigd">
+					<h:outputText value="#{user.datumGewijzigd}" />
+				</p:column>
+				
+				<p:column headerText="Klant actief">
+					<p:selectBooleanCheckbox immediate="true"  id="actiefbox#{user.id}" value="#{user.klantActief}" />
+				</p:column>
+				
+				<p:column headerText="Admin rechten">
+					<p:selectBooleanCheckbox id="adminbox#{user.id}" value="#{user.adminRechten}" />
+				</p:column>
+			</p:dataTable>
+			<p:commandButton value="Opslaan" action="#{servletController.massaKlantWijzigingenOpslaan()}"/>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

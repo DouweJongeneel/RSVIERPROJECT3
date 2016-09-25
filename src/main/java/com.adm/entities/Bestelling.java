@@ -7,6 +7,7 @@ package com.adm.entities;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +20,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -59,13 +62,13 @@ public class Bestelling implements Serializable {
 	
 	@Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "datumAanmaak")
-	private String datumAanmaak;
+	private Date datumAanmaak;
 	
 	@JoinColumn(name = "klant_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-	private Klant klantId;
+	private Klant klant;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bestellingId")
 	private Collection<Bestelartikel> bestelartikelCollection;
@@ -74,13 +77,14 @@ public class Bestelling implements Serializable {
 	private Factuur factuur;
 
 	public Bestelling() {
+		datumAanmaak= new Date(System.currentTimeMillis());
 	}
 
 	public Bestelling(Long id) {
 		this.id = id;
 	}
 
-	public Bestelling(Long id, String bestelNummer, boolean bestellingActief, String datumAanmaak) {
+	public Bestelling(Long id, String bestelNummer, boolean bestellingActief, Date datumAanmaak) {
 		this.id = id;
 		this.bestelNummer = bestelNummer;
 		this.bestellingActief = bestellingActief;
@@ -111,20 +115,20 @@ public class Bestelling implements Serializable {
 		this.bestellingActief = bestellingActief;
 	}
 
-	public String getDatumAanmaak() {
+	public Date getDatumAanmaak() {
 		return datumAanmaak;
 	}
 
-	public void setDatumAanmaak(String datumAanmaak) {
+	public void setDatumAanmaak(Date datumAanmaak) {
 		this.datumAanmaak = datumAanmaak;
 	}
 
-	public Klant getKlantId() {
-		return klantId;
+	public Klant getKlant() {
+		return klant;
 	}
 
-	public void setKlantId(Klant klantId) {
-		this.klantId = klantId;
+	public void setKlant(Klant klant) {
+		this.klant = klant;
 	}
 
 	@XmlTransient

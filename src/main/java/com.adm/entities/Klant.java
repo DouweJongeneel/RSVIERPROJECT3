@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
 @Table(name = "klant")
 @NamedQueries({
 	@NamedQuery(name = "Klant.findAll", query = "SELECT k FROM Klant k"),
-	@NamedQuery(name = "Klant.findByEmail", query = "SELECT k FROM Klant k WHERE k.email = :email")})
+	@NamedQuery(name = "Klant.findByEmail", query = "SELECT k FROM Klant k WHERE k.email = :email AND k.password = :password")})
 public class Klant implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -42,35 +42,31 @@ public class Klant implements Serializable {
 	@Column(name = "id")
 	private Long id;
 
-	@NotNull
+	
 	@Size(min = 1, max = 255)
 	@Column(name = "voornaam")
 	private String voornaam;
 
-	@NotNull
+	
 	@Size(max = 255)
 	@Column(name = "tussenvoegsel")
 	private String tussenvoegsel;
 
-	@NotNull
 	@Size(min = 1, max = 255)
 	@Column(name = "achternaam")
 	private String achternaam;
 
-	@NotNull
 	@Size(min = 1, max = 255)
 	@Column(name = "password")
 	private String password;
-	
+
 	@Transient
 	private String tempPassword = "********";
 
-	@NotNull
 	@Size(min = 1, max = 255)
 	@Column(name = "email")
 	private String email;
 
-	@NotNull
 	@Size(min = 1, max = 255)
 	@Column(name = "datumAanmaak")
 	private String datumAanmaak;
@@ -79,62 +75,32 @@ public class Klant implements Serializable {
 	@Column(name = "datumGewijzigd")
 	private String datumGewijzigd;
 
-	@NotNull
-	@Size(min = 1, max = 255)
 	@Column(name = "klantActief")
-	private String klantActief;
+	private boolean klantActief;
 
-	@NotNull
 	@Size(min = 1, max = 255)
 	@Column(name = "klantRol")
-	private String klantRol;
+	private String klantRol = "ROLE_USER";
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klantId")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klant")
 	private Collection<Betaling> betalingCollection;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klant")
 	private Collection<Klantadresadrestype> klantadresadrestypeCollection;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klantId")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klant")
 	private Collection<Bestelling> bestellingCollection;
 
 	@Transient
-	boolean canEdit = false; 
-	
+	boolean canEdit = false;
+
+	@Transient
+	private boolean adminRechten;
+
 	public Klant() {
 		datumAanmaak = new Date(System.currentTimeMillis()).toString();
-		this.klantActief = "1";
+		this.klantActief = true;
 		this.klantRol = "ROLE_USER";
-	}
-
-	public Klant(Long id) {
-		this.id = id;
-		this.klantActief = "1";
-		datumAanmaak = new Date(System.currentTimeMillis()).toString();
-	}
-
-	public Klant(String voornaam, String tussenvoegsel, String achternaam, String email, String password) {
-		this.achternaam = achternaam;
-		this.email = email;
-		this.klantActief = "1";
-		this.klantRol = "ROLE_USER";
-		this.password = password;
-		this.tussenvoegsel = tussenvoegsel;
-		this.voornaam = voornaam;
-		datumAanmaak = new Date(System.currentTimeMillis()).toString();
-	}
-
-	public Klant(Long id, String achternaam, String datumAanmaak, String datumGewijzigd, String email, String klantActief, String klantRol, String password, String tussenvoegsel, String voornaam) {
-		this.id = id;
-		this.achternaam = achternaam;
-		this.datumAanmaak = datumAanmaak;
-		this.datumGewijzigd = datumGewijzigd;
-		this.email = email;
-		this.klantActief = klantActief;
-		this.klantRol = klantRol;
-		this.password = password;
-		this.tussenvoegsel = tussenvoegsel;
-		this.voornaam = voornaam;
 	}
 
 	public Long getId() {
@@ -177,12 +143,8 @@ public class Klant implements Serializable {
 		this.email = email;
 	}
 
-	public String getKlantActief() {
+	public boolean isKlantActief() {
 		return klantActief;
-	}
-
-	public void setKlantActief(String klantActief) {
-		this.klantActief = klantActief;
 	}
 
 	public String getKlantRol() {
@@ -200,7 +162,7 @@ public class Klant implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public String getTempPassword() {
 		return tempPassword;
 	}
@@ -255,6 +217,24 @@ public class Klant implements Serializable {
 
 	public void setCanEdit(boolean canEdit) {
 		this.canEdit = canEdit;
+	}
+
+	public boolean isAdminRechten() {
+		return klantRol.equals("ROLE_ADMINISTRATOR");
+	}
+
+	public void setAdminRechten(boolean adminRechten) {
+		if (this.isAdminRechten() != adminRechten) {
+			datumGewijzigd = new Date(System.currentTimeMillis()).toString();
+		}
+		klantRol = adminRechten ? "ROLE_ADMINISTRATOR" : "ROLE_USER";
+	}
+
+	public void setKlantActief(boolean klantActief) {
+		if (this.isKlantActief() != klantActief) {
+			datumGewijzigd = new Date(System.currentTimeMillis()).toString();
+		}
+		this.klantActief = klantActief;
 	}
 
 	@Override

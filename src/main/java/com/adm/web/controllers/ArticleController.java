@@ -40,7 +40,7 @@ public class ArticleController implements Serializable {
 	 * ARTIKEL METHODES
 	 */
 	public String gotoArticleOverview(String type) {
-		SessionController.naarSessieVariabele("itemOverzicht", artikelFacade.withNamedQuery("Artikel.findByArtikelType", "artikelType", type));
+		SessionController.naarSessieVariabele("itemOverzicht", artikelFacade.withNamedQuery("Artikel.findByArtikelType", new String[]{"artikelType"}, new String[]{type}));
 		return "/pages/artikel/artikelOverzicht?faces-redirect=true";
 	}
 
@@ -68,7 +68,7 @@ public class ArticleController implements Serializable {
 	}
 
 	public List getArtikelen() {
-		List<Artikel> artikelen = artikelFacade.withNamedQuery("Artikel.findByArtikelType", "artikelType", "%");
+		List<Artikel> artikelen = artikelFacade.withNamedQuery("Artikel.findByArtikelType", new String[]{"artikelType"}, new String[]{"%"});
 		return artikelen;
 	}
 

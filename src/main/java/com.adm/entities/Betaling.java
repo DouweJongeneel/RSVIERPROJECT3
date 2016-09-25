@@ -59,13 +59,13 @@ public class Betaling implements Serializable {
 	
 	@JoinColumn(name = "klant_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-	private Klant klantId;
+	private Klant klant;
 	
-	@JoinColumn(name = "betaalwijze_id", referencedColumnName = "id")
-    @OneToOne(optional = false)
-	private Betaalwijze betaalwijzeId;
+	@Column(name="betaalwijze")
+	private String betaalwijze;
 
 	public Betaling() {
+		betaalDatum = new Date(System.currentTimeMillis());
 	}
 
 	public Betaling(Long id) {
@@ -109,20 +109,20 @@ public class Betaling implements Serializable {
 		this.factuurId = factuurId;
 	}
 
-	public Klant getKlantId() {
-		return klantId;
+	public Klant getKlant() {
+		return klant;
 	}
 
-	public void setKlantId(Klant klantId) {
-		this.klantId = klantId;
+	public void setKlant(Klant klant) {
+		this.klant = klant;
 	}
 
-	public Betaalwijze getBetaalwijzeId() {
-		return betaalwijzeId;
+	public String getBetaalwijze() {
+		return betaalwijze;
 	}
 
-	public void setBetaalwijzeId(Betaalwijze betaalwijzeId) {
-		this.betaalwijzeId = betaalwijzeId;
+	public void setBetaalwijze(String betaalwijze) {
+		this.betaalwijze = betaalwijze;
 	}
 
 	@Override
