@@ -64,7 +64,7 @@ public class ArticleController implements Serializable {
 
 		FileUploadHelper.hernoemEnVerplaatsAfbeelding(artikel.getArtikelId(), "artikel");
 
-		return "/pages/artikel/artikelOverzicht";
+		return "/protected/artikel/artikelRegustratie";
 	}
 
 	public List getArtikelen() {

@@ -10,7 +10,7 @@
 
 		<h:form>
 
-			<h:panelGrid id ="toonArtikel" columns = "2" border ="0" cellpadding ="1" cellspacing ="0">
+			<p:panelGrid id ="toonArtikel" columns = "2">
 				<p:outputLabel value ="Artikel" />
 				<p:outputLabel id = "artikel" value="#{sessionScope.artikel.artikelNaam}" />
 
@@ -24,7 +24,7 @@
 				<p:inputNumber decimalPlaces="0" id="aantal" value="#{articleController.aantal}"/>
 				
 				<p:commandButton value="Submit" action="#{bestellingController.maakBestelArtikel(sessionScope.artikel, sessionScope.artikel.getActuelePrijs(), articleController.aantal)}" />
-			</h:panelGrid>
+			</p:panelGrid>
 		</h:form>
 	</ui:define>
 

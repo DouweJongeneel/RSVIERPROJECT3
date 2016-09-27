@@ -12,7 +12,7 @@
 
 			<p:dataTable id="winkelwagen" var="wagenObject" value="#{sessionScope.winkelwagen}" editable="true" style="margin-bottom:20px">
 				<f:facet name="header">
-					Winkelwagen
+					Winkelwagen Totaal: &#8364; #{bestellingController.getTotaalPrijs()}
 				</f:facet>
 
 
@@ -43,7 +43,7 @@
 					<p:rowEditor />
 				</p:column>
 			</p:dataTable>
-			<p:commandButton action="bestellingController.naarBetaalMethode" value="Naar betalen" />
+			<p:commandButton action="#{bestellingController.naarBetaalMethode}" value="Naar betalen" />
 		</h:form>
 	</ui:define>
 

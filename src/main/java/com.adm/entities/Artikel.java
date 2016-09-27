@@ -85,10 +85,10 @@ public class Artikel implements Serializable {
 	@Column(name = "verwachteLevertijd")
 	private Integer verwachteLevertijd;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "artikelId")
+	@OneToMany(cascade = CascadeType.MERGE, mappedBy = "artikelId")
 	private Collection<Bestelartikel> bestelartikelCollection;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "artikel")
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "artikel")
 	private Collection<Prijs> prijsCollection;
 
 	public Artikel() {

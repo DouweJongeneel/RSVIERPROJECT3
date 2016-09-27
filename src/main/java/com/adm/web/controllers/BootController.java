@@ -40,7 +40,7 @@ public class BootController {
 		if (System.getProperty("os.name").startsWith("Windows")) {
 			SessionController.setBasePath("c:/harrie/");
 		} else {
-			SessionController.setBasePath("/etc/harrie/");
+			SessionController.setBasePath("/tmp/harrie/");
 		}
 
 		if (SessionController.findBean("artikelCategorieLijst") == null) {
@@ -72,11 +72,11 @@ public class BootController {
 		DefaultMenuItem logout = maakMenuItem("Logout", "#{sessionController.logout()}", ((Klant) SessionController.findBean("klant")).getEmail() != null);
 
 		DefaultMenuItem register = maakMenuItem("Register", "#{servletController.goToKlantRegister}", ((Klant) SessionController.findBean("klant")).getEmail() == null);
-		
+
 		DefaultMenuItem winkelwagen = maakMenuItem("Winkelwagen", "#{bestellingController.gotoWinkelwagen}");
 
 		DefaultMenuItem profile = maakMenuItem("Profiel", "#{servletController.gotoCustomerProfile}", ((Klant) SessionController.findBean("klant")).getEmail() != null);
-		
+
 		DefaultSubMenu artikelTypes = new DefaultSubMenu(menuNaam);
 
 		for (String menuItem : (List<String>) SessionController.findBean(sessieVariabele)) {
@@ -86,11 +86,8 @@ public class BootController {
 
 		DefaultSubMenu admin = new DefaultSubMenu("Admin");
 		admin.setRendered(((Klant) SessionController.findBean("klant")).getKlantRol().equals("ROLE_ADMINISTRATOR"));
-
 		DefaultMenuItem nieuwArtikel = maakMenuItem("Nieuw Artikel", "#{articleController.gotoRegisterArticle}");
-
 		DefaultMenuItem userLijst = maakMenuItem("Klantenlijst", "#{servletController.gotoCustomerList}");
-
 		admin.addElement(nieuwArtikel);
 		admin.addElement(userLijst);
 
@@ -105,20 +102,20 @@ public class BootController {
 
 		SessionController.naarSessieVariabele(menuNaam, model);
 	}
-	
-	private DefaultMenuItem maakMenuItem(String naam, String command){
+
+	private DefaultMenuItem maakMenuItem(String naam, String command) {
 		DefaultMenuItem menuItem = new DefaultMenuItem(naam);
 		menuItem.setCommand(command);
 		return menuItem;
 	}
 
-		private DefaultMenuItem maakMenuItem(String naam, String command, boolean rendered){
+	private DefaultMenuItem maakMenuItem(String naam, String command, boolean rendered) {
 		DefaultMenuItem menuItem = new DefaultMenuItem(naam);
 		menuItem.setCommand(command);
 		menuItem.setRendered(rendered);
 		return menuItem;
 	}
-	
+
 	public MenuModel getModel() {
 		return model;
 	}

@@ -5,47 +5,49 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 				xmlns:p="http://primefaces.org/ui">
 
+
+
+
 	<ui:define name="content">
 		<h:form>
-			<p:panelGrid id ="editKlant" columns = "3" >
+			<p:messages autoUpdate="true"/>
+			<p:panelGrid id ="editKlant" columns = "2" >
+				
 				<p:outputLabel value="Voornaam" />
 				<p:inplace id="basic">
-					<p:inputText id="voornaam" value="#{sessionScope.klant.voornaam}" />
+					<p:inputText id="voornaam" value="#{sessionScope.klant.voornaam}" >
+						<f:validateLength for="voornaam" minimum="2" maximum="20" />
+					</p:inputText>
 				</p:inplace>
-				<p:message for="voornaam" style="color:red" />
 
 				<p:outputLabel value ="tussenvoegsel" />
 				<p:inplace>
-					<p:inputText id="tussenvoegsel" value="#{sessionScope.klant.tussenvoegsel}" size="30" disabled="#{not sessionScope.klant.canEdit}">
-						<f:validateLength for="tussenvoegsel" maximum="20" />				
+					<p:inputText id="tussenvoegsel" value="#{sessionScope.klant.tussenvoegsel}" size="30" >
+						<f:validateLength for="tussenvoegsel" maximum="20" />
 					</p:inputText>
 				</p:inplace>
-				<p:message for="tussenvoegsel" style="color:red" />
 
 				<p:outputLabel value ="Achternaam" />
 				<p:inplace>
-					<p:inputText id="achternaam" value="#{sessionScope.klant.achternaam}" size="30" disabled="#{not sessionScope.klant.canEdit}">
+					<p:inputText id="achternaam" value="#{sessionScope.klant.achternaam}" size="30" >
 						<f:validateLength for="achternaam" minimum="2" maximum="20" />				
 					</p:inputText>
 				</p:inplace>
-				<p:message for="achternaam" style="color:red" />
 
 				<p:outputLabel value ="Email" />
 				<p:inplace>
-					<p:inputText id="email" value="#{sessionScope.klant.email}" size="30" disabled="#{not sessionScope.klant.canEdit}">
+					<p:inputText id="email" value="#{sessionScope.klant.email}" size="30">
 						<f:validator validatorId="com.adm.validators.EmailValidator" />				
 					</p:inputText>
 				</p:inplace>
 
-				<p:message for="email" style="color:red" />
 
 				<p:outputLabel value ="wachtwoord" />
 				<p:inplace>
-					<p:password id="password" value="#{sessionScope.klant.tempPassword}" size="30" disabled="#{not sessionScope.klant.canEdit}">
+					<p:password id="password" value="#{sessionScope.klant.tempPassword}" size="30">
 						<f:validateLength for="password" minimum="8" maximum="100" />
 					</p:password>
 				</p:inplace>
-				<p:message for="password" style="color:red" />
 
 				<p:commandButton value="Submit" action="#{servletController.editUser()}" />
 

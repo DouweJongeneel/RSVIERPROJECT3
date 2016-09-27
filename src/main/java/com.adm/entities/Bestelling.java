@@ -12,6 +12,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -43,9 +45,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Bestelling implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
-    @Basic(optional = false)
-    @NotNull
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
 	private Long id;
 	
@@ -67,17 +69,18 @@ public class Bestelling implements Serializable {
 	private Date datumAanmaak;
 	
 	@JoinColumn(name = "klant_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	private Klant klant;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bestellingId")
 	private Collection<Bestelartikel> bestelartikelCollection;
 	
-	@OneToOne(optional = false)
+	@OneToOne(optional = false, cascade = CascadeType.ALL)
 	private Factuur factuur;
 
 	public Bestelling() {
 		datumAanmaak= new Date(System.currentTimeMillis());
+		bestellingActief = true;
 	}
 
 	public Bestelling(Long id) {

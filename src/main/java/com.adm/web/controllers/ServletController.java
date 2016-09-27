@@ -18,12 +18,14 @@ public class ServletController implements Serializable {
 	@EJB
 	KlantFacade klantFacade;
 
+	private List<Klant> klantenLijst;
+
 	private Klant klant = new Klant();
 	private Adres adres = new Adres();
 
 	public String massaKlantWijzigingenOpslaan() {
-		List<Klant> list = (List<Klant>) SessionController.findBean("klantenLijst");
-		for (Klant klant : list) {
+//		List<Klant> list = (List<Klant>) SessionController.findBean("klantenLijst");
+		for (Klant klant : klantenLijst) {
 			klantFacade.edit(klant);
 		}
 		return "/protected/klant/klantenLijst?faces-redirect=true";
@@ -57,8 +59,15 @@ public class ServletController implements Serializable {
 	}
 
 	public String gotoCustomerList() {
-		SessionController.naarSessieVariabele("klantenLijst", klantFacade.findAll());
 		return "/protected/klant/klantenLijst";
+	}
+
+	public List<Klant> retrieveKlantenLijst() {
+		if (((Klant) SessionController.findBean("klant")).getKlantRol().equals("ROLE_ADMINISTRATOR")) {
+			klantenLijst = klantFacade.findAll();
+			return klantenLijst;
+		}
+		return null;
 	}
 
 	public String editUser() {
@@ -87,6 +96,14 @@ public class ServletController implements Serializable {
 
 	public void setAdres(Adres adres) {
 		this.adres = adres;
+	}
+
+	public List<Klant> getKlantenLijst() {
+		return klantenLijst;
+	}
+
+	public void setKlantenLijst(List<Klant> klantenLijst) {
+		this.klantenLijst = klantenLijst;
 	}
 
 }

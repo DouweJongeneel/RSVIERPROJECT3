@@ -11,8 +11,9 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -42,30 +43,29 @@ public class Factuur implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "id")
+	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Basic(optional = false)
-    @NotNull
-    @Column(name = "factureringsDatum")
-    @Temporal(TemporalType.TIMESTAMP)
+
+	@Column(name = "factureringsDatum")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date factureringsDatum;
-	
-	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "factuurNummer")
+
+	@Size(min = 1, max = 255)
+	@Column(name = "factuurNummer")
 	private String factuurNummer;
-	
+
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "factuurId")
 	private Betaling betaling;
-	
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "factuur")
+
+	@OneToOne(cascade = CascadeType.MERGE, mappedBy = "factuur")
 	private Bestelling bestellingId;
 
+	@ManyToOne(cascade = CascadeType.MERGE)
+	private Klant klant;
+
 	public Factuur() {
+		factureringsDatum = new Date(System.currentTimeMillis());
 	}
 
 	public Factuur(Long id) {
@@ -119,6 +119,16 @@ public class Factuur implements Serializable {
 		this.bestellingId = bestellingId;
 	}
 
+	public Klant getKlant() {
+		return klant;
+	}
+
+	public void setKlant(Klant klant) {
+		this.klant = klant;
+	}
+	
+	
+
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -142,5 +152,5 @@ public class Factuur implements Serializable {
 	public String toString() {
 		return "com.mycompany.rsvierproject3.Factuur[ id=" + id + " ]";
 	}
-	
+
 }

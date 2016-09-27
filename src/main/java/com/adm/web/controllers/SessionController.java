@@ -39,12 +39,14 @@ public class SessionController implements Serializable {
 	}
 
 	public String checkLogin() {
-		List<Klant> tempKlant = klantFacade.withNamedQuery("Klant.findByEmail", new String[]{"email", "password"}, new String[]{userName, password});
+		List<Klant> tempKlant = klantFacade.withNamedQuery("Klant.findByEmailPassword", new String[]{"email", "password"}, new String[]{userName, password});
 
 		if (tempKlant.size() == 1) {
 			naarSessieVariabele("klant", tempKlant.get(0));
-			Klant klant = (Klant)findBean("klant");
-
+			
+			password = null;
+			userName = null;
+			
 			return "/pages/klant/klantProfile";
 		} else {
 			tempKlant = null;
@@ -54,6 +56,7 @@ public class SessionController implements Serializable {
 
 	public String logout() {
 		naarSessieVariabele("klant", new Klant());
+		System.out.println(((Klant)findBean("klant")).getEmail());
 		verwijderSessieVariabele("klantenLijst");
 		return "/pages/home?faces-redirect=true";
 	}

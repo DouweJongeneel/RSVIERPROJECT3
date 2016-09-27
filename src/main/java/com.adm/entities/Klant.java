@@ -31,23 +31,21 @@ import javax.validation.constraints.Size;
 @Table(name = "klant")
 @NamedQueries({
 	@NamedQuery(name = "Klant.findAll", query = "SELECT k FROM Klant k"),
-	@NamedQuery(name = "Klant.findByEmail", query = "SELECT k FROM Klant k WHERE k.email = :email AND k.password = :password")})
+	@NamedQuery(name = "Klant.findByEmail", query = "SELECT k FROM Klant k WHERE k.email = :email"),
+	@NamedQuery(name = "Klant.findByEmailPassword", query = "SELECT k FROM Klant k WHERE k.email = :email AND k.password = :password")})
 public class Klant implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Basic(optional = false)
 	@Column(name = "id")
 	private Long id;
 
-	
 	@Size(min = 1, max = 255)
 	@Column(name = "voornaam")
 	private String voornaam;
 
-	
 	@Size(max = 255)
 	@Column(name = "tussenvoegsel")
 	private String tussenvoegsel;
@@ -80,7 +78,7 @@ public class Klant implements Serializable {
 
 	@Size(min = 1, max = 255)
 	@Column(name = "klantRol")
-	private String klantRol = "ROLE_USER";
+	private String klantRol;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klant")
 	private Collection<Betaling> betalingCollection;
@@ -90,6 +88,9 @@ public class Klant implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klant")
 	private Collection<Bestelling> bestellingCollection;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "klant")
+	private Collection<Factuur> factuurCollection;
 
 	@Transient
 	boolean canEdit = false;
@@ -221,6 +222,26 @@ public class Klant implements Serializable {
 
 	public boolean isAdminRechten() {
 		return klantRol.equals("ROLE_ADMINISTRATOR");
+	}
+
+	public Collection<Factuur> getFactuurCollection() {
+		return factuurCollection;
+	}
+
+	public void setFactuurCollection(Collection<Factuur> factuurCollection) {
+		this.factuurCollection = factuurCollection;
+	}
+
+	public void voegToeAanFactuurCollection(Factuur factuur) {
+		if (!factuurCollection.contains(factuur)) {
+			factuurCollection.add(factuur);
+		}
+	}
+	
+	public void voegToeAanBestellingCollection(Bestelling bestelling){
+		if(!bestellingCollection.contains(bestelling)){
+			bestellingCollection.add(bestelling);
+		}
 	}
 
 	public void setAdminRechten(boolean adminRechten) {

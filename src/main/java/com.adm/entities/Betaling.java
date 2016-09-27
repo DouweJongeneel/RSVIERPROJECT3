@@ -8,8 +8,11 @@ package com.adm.entities;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -38,14 +41,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Betaling implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Basic(optional = false)
-    @NotNull
     @Column(name = "betaalDatum")
     @Temporal(TemporalType.DATE)
 	private Date betaalDatum;
@@ -54,15 +55,15 @@ public class Betaling implements Serializable {
     @Column(name = "betalingsGegevens")
 	private String betalingsGegevens;
 	
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, cascade = CascadeType.MERGE)
 	private Factuur factuurId;
 	
 	@JoinColumn(name = "klant_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	private Klant klant;
 	
 	@Column(name="betaalwijze")
-	private String betaalwijze;
+	private String betaalwijze = "";
 
 	public Betaling() {
 		betaalDatum = new Date(System.currentTimeMillis());
@@ -124,6 +125,8 @@ public class Betaling implements Serializable {
 	public void setBetaalwijze(String betaalwijze) {
 		this.betaalwijze = betaalwijze;
 	}
+	
+	
 
 	@Override
 	public int hashCode() {
