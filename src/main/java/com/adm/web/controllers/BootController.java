@@ -36,21 +36,22 @@ public class BootController {
 
 	@PostConstruct
 	public void init() {
-		if (SessionController.findBean("klant") == null) {
-			SessionController.naarSessieVariabele("klant", new Klant());
-		}
+
 		if (System.getProperty("os.name").startsWith("Windows")) {
 			SessionController.setBasePath("c:/harrie/");
 		} else {
-			SessionController.setBasePath("/etc/harrie/");
+			SessionController.setBasePath("/tmp/harrie/");
 		}
 
 		if (SessionController.findBean("artikelCategorieLijst") == null) {
 			SessionController.naarSessieVariabele("artikelCategorieLijst", artikelFacade.haalCategorieTypesOp());
 		}
-		if(SessionController.findBean("winkelwagen") == null)
+		if (SessionController.findBean("winkelwagen") == null) {
 			SessionController.naarSessieVariabele("winkelwagen", new LinkedHashSet<Bestelartikel>());
-		
+		}
+		if (SessionController.findBean("klant") == null) {
+			SessionController.naarSessieVariabele("klant", new Klant());
+		}
 	}
 
 	public BootController() {
@@ -64,33 +65,55 @@ public class BootController {
 	public void maakMenu(String sessieVariabele, String menuNaam) {
 
 		model = new DefaultMenuModel();
-		DefaultMenuItem home = new DefaultMenuItem("Home");
-		home.setCommand("#{servletController.gotoHome}");
+		DefaultMenuItem home = maakMenuItem("Home", "#{servletController.gotoHome}");
 
-		DefaultMenuItem login = new DefaultMenuItem("Login");
-		login.setCommand("#{sessionController.moveToLogin}");
+		DefaultMenuItem login = maakMenuItem("Login", "#{sessionController.moveToLogin}", ((Klant) SessionController.findBean("klant")).getEmail() == null);
 
-		DefaultMenuItem register = new DefaultMenuItem("Register");
-		register.setCommand("#{servletController.goToKlantRegister}");
+		DefaultMenuItem logout = maakMenuItem("Logout", "#{sessionController.logout()}", ((Klant) SessionController.findBean("klant")).getEmail() != null);
 
-		DefaultMenuItem winkelwagen = new DefaultMenuItem("Winkelwagen");
-		winkelwagen.setCommand("#{bestellingController.gotoWinkelwagen}");
+		DefaultMenuItem register = maakMenuItem("Register", "#{servletController.goToKlantRegister}", ((Klant) SessionController.findBean("klant")).getEmail() == null);
 
-		
-		DefaultSubMenu submenu = new DefaultSubMenu(menuNaam);
+		DefaultMenuItem winkelwagen = maakMenuItem("Winkelwagen", "#{bestellingController.gotoWinkelwagen}");
+
+		DefaultMenuItem profile = maakMenuItem("Profiel", "#{servletController.gotoCustomerProfile}", ((Klant) SessionController.findBean("klant")).getEmail() != null);
+
+		DefaultSubMenu artikelTypes = new DefaultSubMenu(menuNaam);
+
 		for (String menuItem : (List<String>) SessionController.findBean(sessieVariabele)) {
-			DefaultMenuItem item = new DefaultMenuItem(menuItem);
-			item.setCommand("#{articleController.gotoArticleOverview('" + menuItem + "')}");
-			submenu.addElement(item);
+			DefaultMenuItem item = maakMenuItem(menuItem, "#{articleController.gotoArticleOverview('" + menuItem + "')}");
+			artikelTypes.addElement(item);
 		}
 
+		DefaultSubMenu admin = new DefaultSubMenu("Admin");
+		admin.setRendered(((Klant) SessionController.findBean("klant")).getKlantRol().equals("ROLE_ADMINISTRATOR"));
+		DefaultMenuItem nieuwArtikel = maakMenuItem("Nieuw Artikel", "#{articleController.gotoRegisterArticle}");
+		DefaultMenuItem userLijst = maakMenuItem("Klantenlijst", "#{servletController.gotoCustomerList}");
+		admin.addElement(nieuwArtikel);
+		admin.addElement(userLijst);
+
 		model.addElement(home);
-		model.addElement(login);
-		model.addElement(register);
-		model.addElement(submenu);
+		model.addElement(artikelTypes);
 		model.addElement(winkelwagen);
+		model.addElement(profile);
+		model.addElement(admin);
+		model.addElement(login);
+		model.addElement(logout);
+		model.addElement(register);
 
 		SessionController.naarSessieVariabele(menuNaam, model);
+	}
+
+	private DefaultMenuItem maakMenuItem(String naam, String command) {
+		DefaultMenuItem menuItem = new DefaultMenuItem(naam);
+		menuItem.setCommand(command);
+		return menuItem;
+	}
+
+	private DefaultMenuItem maakMenuItem(String naam, String command, boolean rendered) {
+		DefaultMenuItem menuItem = new DefaultMenuItem(naam);
+		menuItem.setCommand(command);
+		menuItem.setRendered(rendered);
+		return menuItem;
 	}
 
 	public MenuModel getModel() {

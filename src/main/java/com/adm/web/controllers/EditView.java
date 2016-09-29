@@ -5,7 +5,6 @@
  */
 package com.adm.web.controllers;
 
-import com.adm.entities.Bestelartikel;
 import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -19,13 +18,13 @@ import org.primefaces.event.RowEditEvent;
 public class EditView implements Serializable {
 
 	public void onRowEdit(RowEditEvent event) {
-		FacesMessage msg = new FacesMessage("Aantal aangespast", ((Bestelartikel) event.getObject()).getArtikelId().getArtikelNaam());
-		FacesContext.getCurrentInstance().addMessage(null, msg);
+//		FacesMessage msg = new FacesMessage("Aantal aangespast", ((Bestelartikel) event.getObject()).getArtikelId().getArtikelNaam());
+//		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
 	public void onRowCancel(RowEditEvent event) {
-		FacesMessage msg = new FacesMessage("Edit Cancelled", ((Bestelartikel) event.getObject()).getArtikelId().getArtikelNaam());
-		FacesContext.getCurrentInstance().addMessage(null, msg);
+//		FacesMessage msg = new FacesMessage("Edit Cancelled", ((Bestelartikel) event.getObject()).getArtikelId().getArtikelNaam());
+//		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 
 	public void onCellEdit(CellEditEvent event) {

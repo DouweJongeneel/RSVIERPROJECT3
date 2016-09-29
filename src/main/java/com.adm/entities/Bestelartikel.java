@@ -8,8 +8,11 @@ package com.adm.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -34,9 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Bestelartikel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
-	@Basic(optional = false)
-	@NotNull
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
 
@@ -46,15 +49,15 @@ public class Bestelartikel implements Serializable {
 	private int aantal;
 
 	@JoinColumn(name = "artikelId", referencedColumnName = "artikelId")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	private Artikel artikelId;
 
 	@JoinColumn(name = "BestellingId", referencedColumnName = "id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	private Bestelling bestellingId;
 
 	@JoinColumn(name = "prijsId", referencedColumnName = "id")
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false, cascade = CascadeType.MERGE)
 	private Prijs prijsId;
 
 

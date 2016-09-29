@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.Basic;
@@ -55,41 +56,41 @@ public class Artikel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @Basic(optional = false)
-    @Column(name = "artikelId")
+	@Basic(optional = false)
+	@Column(name = "artikelId")
 	@GeneratedValue(strategy = IDENTITY)
 	private Long artikelId;
 
 	@Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "artikelNaam")
+	@NotNull
+	@Size(min = 1, max = 255)
+	@Column(name = "artikelNaam")
 	private String artikelNaam;
 
 	@Size(max = 255)
-    @Column(name = "artikelType")
+	@Column(name = "artikelType")
 	private String artikelType;
 
 	@Basic(optional = false)
-    @NotNull
-    @Column(name = "datumAanmaak")
-    @Temporal(TemporalType.TIMESTAMP)
+	@NotNull
+	@Column(name = "datumAanmaak")
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date datumAanmaak;
 
 	@Basic(optional = false)
-    @NotNull
-    @Column(name = "inAssortiment")
+	@NotNull
+	@Column(name = "inAssortiment")
 	private boolean inAssortiment;
 
 	@Column(name = "verwachteLevertijd")
 	private Integer verwachteLevertijd;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "artikelId")
+	@OneToMany(cascade = CascadeType.MERGE, mappedBy = "artikelId")
 	private Collection<Bestelartikel> bestelartikelCollection;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="artikel")
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "artikel")
 	private Collection<Prijs> prijsCollection;
-	
+
 	public Artikel() {
 	}
 
@@ -104,7 +105,7 @@ public class Artikel implements Serializable {
 		inAssortiment = true;
 		datumAanmaak = new Date(System.currentTimeMillis());
 	}
-	
+
 	public Artikel(String artikelNaam, Integer verwachteLevertijd, boolean opVoorraad) {
 		this.artikelNaam = artikelNaam;
 		this.verwachteLevertijd = verwachteLevertijd;
@@ -179,7 +180,7 @@ public class Artikel implements Serializable {
 	}
 
 	public Prijs getActuelePrijs() {
-		return ((Prijs)prijsCollection.toArray()[prijsCollection.size()-1]);
+		return ((Prijs) prijsCollection.toArray()[prijsCollection.size() - 1]);
 	}
 
 	public byte[] getImage() {
@@ -193,8 +194,8 @@ public class Artikel implements Serializable {
 		return null;
 	}
 
-	public void addPrijsAanCollectie(Prijs prijs){
-		if(prijsCollection == null){
+	public void addPrijsAanCollectie(Prijs prijs) {
+		if (prijsCollection == null) {
 			prijsCollection = new ArrayList<Prijs>();
 		}
 		prijsCollection.add(prijs);
@@ -213,15 +214,12 @@ public class Artikel implements Serializable {
 			return false;
 		}
 		Artikel other = (Artikel) object;
-		if ((this.artikelId == null && other.artikelId != null) || (this.artikelId != null && !this.artikelId.equals(other.artikelId))) {
-			return false;
-		}
-		return true;
+		return artikelNaam.equals(other.getArtikelNaam()) && Objects.equals(artikelId, other.getArtikelId());
 	}
 
 	@Override
 	public String toString() {
 		return artikelNaam + " " + getActuelePrijs().toString();
 	}
-	
+
 }

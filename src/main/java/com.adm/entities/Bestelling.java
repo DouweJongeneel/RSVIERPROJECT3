@@ -7,10 +7,13 @@ package com.adm.entities;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,6 +22,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -40,9 +45,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Bestelling implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 	@Id
-    @Basic(optional = false)
-    @NotNull
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
 	private Long id;
 	
@@ -59,28 +64,30 @@ public class Bestelling implements Serializable {
 	
 	@Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "datumAanmaak")
-	private String datumAanmaak;
+	private Date datumAanmaak;
 	
 	@JoinColumn(name = "klant_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-	private Klant klantId;
+    @ManyToOne(optional = false, cascade = CascadeType.MERGE)
+	private Klant klant;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "bestellingId")
 	private Collection<Bestelartikel> bestelartikelCollection;
 	
-	@OneToOne(optional = false)
+	@OneToOne(optional = false, cascade = CascadeType.ALL)
 	private Factuur factuur;
 
 	public Bestelling() {
+		datumAanmaak= new Date(System.currentTimeMillis());
+		bestellingActief = true;
 	}
 
 	public Bestelling(Long id) {
 		this.id = id;
 	}
 
-	public Bestelling(Long id, String bestelNummer, boolean bestellingActief, String datumAanmaak) {
+	public Bestelling(Long id, String bestelNummer, boolean bestellingActief, Date datumAanmaak) {
 		this.id = id;
 		this.bestelNummer = bestelNummer;
 		this.bestellingActief = bestellingActief;
@@ -111,20 +118,20 @@ public class Bestelling implements Serializable {
 		this.bestellingActief = bestellingActief;
 	}
 
-	public String getDatumAanmaak() {
+	public Date getDatumAanmaak() {
 		return datumAanmaak;
 	}
 
-	public void setDatumAanmaak(String datumAanmaak) {
+	public void setDatumAanmaak(Date datumAanmaak) {
 		this.datumAanmaak = datumAanmaak;
 	}
 
-	public Klant getKlantId() {
-		return klantId;
+	public Klant getKlant() {
+		return klant;
 	}
 
-	public void setKlantId(Klant klantId) {
-		this.klantId = klantId;
+	public void setKlant(Klant klant) {
+		this.klant = klant;
 	}
 
 	@XmlTransient

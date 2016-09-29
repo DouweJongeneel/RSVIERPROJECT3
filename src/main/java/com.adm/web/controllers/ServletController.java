@@ -1,8 +1,10 @@
 package com.adm.web.controllers;
 
+import com.adm.entities.Adres;
 import com.adm.entities.Klant;
 import com.adm.session.KlantFacade;
 import java.io.Serializable;
+import java.util.List;
 
 import javax.ejb.EJB;
 
@@ -15,6 +17,19 @@ public class ServletController implements Serializable {
 
 	@EJB
 	KlantFacade klantFacade;
+
+	private List<Klant> klantenLijst;
+
+	private Klant klant = new Klant();
+	private Adres adres = new Adres();
+
+	public String massaKlantWijzigingenOpslaan() {
+//		List<Klant> list = (List<Klant>) SessionController.findBean("klantenLijst");
+		for (Klant klant : klantenLijst) {
+			klantFacade.edit(klant);
+		}
+		return "/protected/klant/klantenLijst?faces-redirect=true";
+	}
 
 	public String gotoHome() {
 		return "/pages/home";
@@ -30,41 +45,65 @@ public class ServletController implements Serializable {
 	}
 
 	public String registerCustomer() {
-		Klant klant = klantFacade.create((Klant) SessionController.findBean("klant"));
+		klant.setKlantRol(klant.isAdminRechten() ? "ROLE_ADMINISTRATOR" : "ROLE_USER");
+		klant = klantFacade.create(klant);
 		SessionController.naarSessieVariabele("klant", klant);
 
 		klant.setCanEdit(false);
 
 		return "/pages/klant/klantProfile";
 	}
-//
 
 	public String gotoCustomerProfile() {
-		Klant klant = (Klant) SessionController.findBean("klant");
-		klant.setCanEdit(false);
 		return "/pages/klant/klantProfile";
 	}
-//
-//	public String gotoCustomerList() {
-//		klantBewerkingen.showProfile(request, response);
-//		return "/klant/klantenLijst";
-//	}
-//
-//	public String gotoToggleCustomerStatus() {
-//		klantBewerkingen.tumbleStatusClient(request, response);
-//		return "/klant/klantenLijst";
-//	}
-//
+
+	public String gotoCustomerList() {
+		return "/protected/klant/klantenLijst";
+	}
+
+	public List<Klant> retrieveKlantenLijst() {
+		if (((Klant) SessionController.findBean("klant")).getKlantRol().equals("ROLE_ADMINISTRATOR")) {
+			klantenLijst = klantFacade.findAll();
+			return klantenLijst;
+		}
+		return null;
+	}
 
 	public String editUser() {
 		Klant klant = (Klant) SessionController.findBean("klant");
-
+		System.out.println(klant.getTempPassword());
 		if (!klant.getTempPassword().equals("********")) {
 			klant.setPassword(klant.getTempPassword());
 		}
 
 		klant.setCanEdit(false);
 		klantFacade.edit(klant);
-		return "/pages/klant/klantProfile";
+		return "/pages/klant/klantProfile?faces-redirect=true";
 	}
+
+	public Klant getKlant() {
+		return klant;
+	}
+
+	public void setKlant(Klant klant) {
+		this.klant = klant;
+	}
+
+	public Adres getAdres() {
+		return adres;
+	}
+
+	public void setAdres(Adres adres) {
+		this.adres = adres;
+	}
+
+	public List<Klant> getKlantenLijst() {
+		return klantenLijst;
+	}
+
+	public void setKlantenLijst(List<Klant> klantenLijst) {
+		this.klantenLijst = klantenLijst;
+	}
+
 }
