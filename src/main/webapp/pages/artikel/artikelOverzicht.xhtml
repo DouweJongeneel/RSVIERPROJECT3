@@ -1,0 +1,33 @@
+<ui:composition template="/WEB-INF/templates/common.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+
+        <h:form>
+			<p:dataTable id ="artikelOverzicht" value="#{sessionScope.itemOverzicht}" var="artikel">
+				<p:column width="70" style="center">    				
+					<p:graphicImage height="50" width="50" value="/images/#{artikel.artikelId}"/>
+				</p:column>
+
+				<p:column>    				
+					<f:facet name="header">Artikel</f:facet>    				
+					<p:commandLink value="#{artikel.artikelNaam}" action="#{articleController.gotoArticle(artikel)}">
+						<f:param name="artikel" value="#{artikel.artikelId}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column>    				
+					<f:facet name="header">Prijs</f:facet>    				
+						#{artikel.getActuelePrijs()}
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

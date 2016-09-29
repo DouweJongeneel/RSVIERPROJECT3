@@ -1,0 +1,56 @@
+<ui:composition template="/WEB-INF/templates/common.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+				xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+
+		<h:form id="form">
+			<p:growl id="msgs" showDetail="true"/>
+
+			<p:dataTable id="klantenLijst" var="user" value="#{servletController.klantenLijst}" style="margin-bottom:20px">
+				<f:facet name="header">
+					Klanten
+				</f:facet>
+				
+				<p:column headerText="Voornaam">
+					<h:outputText value="#{user.voornaam}" />
+				</p:column>
+
+				<p:column headerText="Achternaam">
+					<h:outputText value="#{user.achternaam}" />
+				</p:column>
+
+				<p:column headerText="Tussenvoegsel">
+					<h:outputText value="#{user.tussenvoegsel}" />
+				</p:column>
+
+				<p:column headerText="E-mail">
+					<h:outputText value="#{user.email}" />
+				</p:column>
+
+				<!-- adres hier -->
+
+
+				<p:column headerText="Datum aanmaak">
+					<h:outputText value="#{user.datumAanmaak}" />
+				</p:column>
+
+				<p:column headerText="Laatst gewijzigd">
+					<h:outputText value="#{user.datumGewijzigd}" />
+				</p:column>
+				
+				<p:column headerText="Klant actief">
+					<p:selectBooleanCheckbox immediate="true"  id="actiefbox#{user.id}" value="#{user.klantActief}" />
+				</p:column>
+				
+				<p:column headerText="Admin rechten">
+					<p:selectBooleanCheckbox id="adminbox#{user.id}" value="#{user.adminRechten}" />
+				</p:column>
+			</p:dataTable>
+			<p:commandButton value="Opslaan" action="#{servletController.massaKlantWijzigingenOpslaan()}"/>
+		</h:form>
+	</ui:define>
+</ui:composition>
