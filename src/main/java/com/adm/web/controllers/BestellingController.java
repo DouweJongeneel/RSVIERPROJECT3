@@ -73,10 +73,6 @@ public class BestellingController {
 		Klant klant = (Klant) SessionController.findBean("klant");
 		int jaar = Calendar.getInstance().get(Calendar.YEAR);
 
-		System.out.println("V");
-		System.out.println("Hier");
-		System.out.println("V");
-
 		Factuur factuur = new Factuur();
 		Betaling betaling = new Betaling();
 
